@@ -1,7 +1,7 @@
 [
     {
         "name": "Lil Pudgy",
-        "quantity": 1.0,
+        "quantity": 0.0,
         "platform": "opensea",
         "api_name_format": "lilpudgys",
         "token": "ETH",
