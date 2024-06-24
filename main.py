@@ -3,15 +3,25 @@ from customtkinter import *  # pip install customtkinter
 from PIL import ImageTk, Image, ImageEnhance  # pip install pillow
 import requests
 from currency_converter import CurrencyConverter
+from dotenv import load_dotenv
 
 from tkinter import messagebox
 import json
 import time
+import os
+
+# Load environment variables from .env file (APIs in this case)
+load_dotenv()
+
+# API 
+opensea_api = "" # enter your opensea API key here
+magiceden_bearer = "" # enter your magiceden bearer token here
+
+opensea_api = os.getenv('API_OPENSEA') # uncomment if api added manually 3 lines above
+magiceden_bearer = os.getenv('MAGICEDEN_BEARER') # uncomment if api added manually 2 lines above
 
 # global vars
 data = 'data.json'
-opensea_api = "" # enter your opensea API key here
-magiceden_bearer = "" # enter your magiceden bearer token here
 crypto_prices = {
             'SOL': 0,
             'ETH': 0,
@@ -219,6 +229,7 @@ def fetch_crypto_prices():
             'MATIC': matic_price
         }
         return
+    
     else:
         return {
             'error': 'Failed to fetch prices',
