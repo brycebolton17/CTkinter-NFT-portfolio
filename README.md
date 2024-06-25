@@ -21,7 +21,7 @@ This Tkinter nft portfolio application can be used on **Mac**, **Windows** and *
 - clone this project
 ```sh
 git clone https://github.com/brycebolton17/CTkinter-NFT-portfolio.git
-cd CTkinter-NFT-portfolio sh
+cd CTkinter-NFT-portfolio
 ```
 
 - install the requirments file with PIP
@@ -64,4 +64,9 @@ To add a new NFT set, simply add a new snippet to the data.json file
         "total$": 0,
         "vol_24": "0.0"
 }
+```
+## Run the app
+```sh
+cd CTkinter-NFT-portfolio
+python3 main.py
 ```
