@@ -2,12 +2,15 @@ This Tkinter nft portfolio application can be used on **Mac**, **Windows** and *
 
 ## Features
 
-- Add any NFT set from opensea.io to your collection.
+- Add any NFT set from opensea.io to your collection
+- Add / Remove nft to your portfolio
 - Refresh their floor price with one click, and also refresh the cyrpto prices (ETH, SOL, MATIC)
 - Track the value of your portfolio in USD ($) and HUF (hungarian forint)
+- Check the MVP set of the day (Biggest volume change in 24h)
 
 ## Coming Features
 - GUI for adding a new set to the JSON file
+- Export collectin as a csv file
 - GUI to display NFT sets as widgets
   - total value
   - name
