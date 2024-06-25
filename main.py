@@ -15,12 +15,13 @@ load_dotenv()
 
 # API 
 opensea_api = "" # enter your opensea API key here
-magiceden_bearer = "" # enter your magiceden bearer token here
+
 
 opensea_api = os.getenv('API_OPENSEA') # uncomment if api added manually 3 lines above
 magiceden_bearer = os.getenv('MAGICEDEN_BEARER') # uncomment if api added manually 2 lines above
 
 # global vars
+# magiceden_bearer = ""
 data = 'data.json'
 crypto_prices = {
             'SOL': 0,
