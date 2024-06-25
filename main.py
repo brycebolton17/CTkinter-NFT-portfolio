@@ -17,8 +17,8 @@ load_dotenv()
 opensea_api = "" # enter your opensea API key here
 
 
-opensea_api = os.getenv('API_OPENSEA') # uncomment if api added manually 3 lines above
-magiceden_bearer = os.getenv('MAGICEDEN_BEARER') # uncomment if api added manually 2 lines above
+#opensea_api = os.getenv('API_OPENSEA') # uncomment if api added manually 3 lines above
+#magiceden_bearer = os.getenv('MAGICEDEN_BEARER') # uncomment if api added manually 2 lines above
 
 # global vars
 # magiceden_bearer = ""
@@ -457,27 +457,27 @@ nft_grid.grid(rowspan=6, row=0, column=1, sticky='wens', pady=20, padx=20, ipadx
 
 
 
-# create an NFT card with image
-#! complete the when_price_change() with changing all values in these cards
+# # create an NFT card with image
+# #! complete the when_price_change() with changing all values in these cards
 
-    # opening and compressing images
-nft_widget_width = 200
-nft_widget_height = 110
+#     # opening and compressing images
+# nft_widget_width = 200
+# nft_widget_height = 110
 
-card = CTkFrame(nft_grid, corner_radius=20, fg_color='#808080')
-card.pack(padx=10, pady=20)
+# card = CTkFrame(nft_grid, corner_radius=20, fg_color='#808080')
+# card.pack(padx=10, pady=20)
 
-pil = compress_image('Lil Pudgy')
-my_image = CTkImage(light_image=pil, dark_image=pil, size=(nft_widget_width,nft_widget_height))
+# pil = compress_image('Lil Pudgy')
+# my_image = CTkImage(light_image=pil, dark_image=pil, size=(nft_widget_width,nft_widget_height))
 
-card_image = CTkLabel(card, text='', image=my_image)
-card_image.grid(row=0, column=0, columnspan=2, pady=20, padx=8)
+# card_image = CTkLabel(card, text='', image=my_image)
+# card_image.grid(row=0, column=0, columnspan=2, pady=20, padx=8)
 
-title = CTkLabel(card, text='Lil Pudgy', font=title_font2, fg_color='red', corner_radius=0)
-title.grid(row=1, column=0, sticky='w', padx=8, pady=2)
+# title = CTkLabel(card, text='Lil Pudgy', font=title_font2, fg_color='red', corner_radius=0)
+# title.grid(row=1, column=0, sticky='w', padx=8, pady=2)
 
-title2 = CTkLabel(card, text='')
-title2.grid(row=2, column=0, pady=15)
+# title2 = CTkLabel(card, text='')
+# title2.grid(row=2, column=0, pady=15)
 
 
 
