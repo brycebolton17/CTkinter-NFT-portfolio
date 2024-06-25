@@ -60,16 +60,6 @@
         "vol_24": "0.00"
     },
     {
-        "name": "BoDoggos",
-        "quantity": 0.0,
-        "platform": "magiceden",
-        "api_name_format": "bodoggos",
-        "token": "SOL",
-        "token_floor_price": "1.99",
-        "total$": 0,
-        "vol_24": "0.00"
-    },
-    {
         "name": "Purrr Pals",
         "quantity": 0.0,
         "platform": "opensea",
