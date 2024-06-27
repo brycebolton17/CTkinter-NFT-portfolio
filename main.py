@@ -444,7 +444,7 @@ def opensea_url_validator():
             wallet_list = readjson()
             for item in wallet_list:
                 if item['api_name_format'] == set_name:
-                    messagebox.showwarning('error', f'{item['name']} already in watching list!')
+                    messagebox.showwarning('error', f'{item['name']} already in Watchlist!')
                     return
             #
             wallet_list.append({
@@ -549,10 +549,10 @@ opensea_sidebar.grid(row=0, column=3, padx=20, pady=20, sticky='wens')
 padding_label1 = CTkLabel(opensea_sidebar, text='')
 padding_label1.grid(row=0, column=0, columnspan=2, pady=0, padx=20)
 
-opensea_title = CTkLabel(opensea_sidebar, text='Add to Watching List', font=title_font)
+opensea_title = CTkLabel(opensea_sidebar, text='Add to Watchlist', font=title_font)
 opensea_title.grid(row=1, column=0, columnspan=2, pady=0, padx=20, sticky='w')
 
-watching_list_message = CTkLabel(opensea_sidebar, text='(Watching list items can be added to wallet later)', text_color='black')
+watching_list_message = CTkLabel(opensea_sidebar, text='(Watchlist items can be added to wallet later)', text_color='black')
 watching_list_message.grid(row=2, column=0, columnspan=2, pady=0, padx=20)
 
 padding_label2 = CTkLabel(opensea_sidebar, text='')
