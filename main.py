@@ -174,6 +174,9 @@ def remove_watchlist():
     for item in app_data_list:
         if item['name'] == target:
             target_id = item["watchlist_id"]
+            if item['quantity'] > 0.0:
+                messagebox.showwarning('error', f"You hold one {item['name']}, can't delete it!")
+                return
 
     # create new list with changing id and ignoring the target set
     new_list_without_target = []
@@ -184,6 +187,8 @@ def remove_watchlist():
             new_list_without_target.append(item)
     #
     writejson(new_list_without_target)
+    messagebox.showinfo('error', f'{target} deleted!')
+    refresh_mvp()
     refresh_option_lists()
     destroy_nftgrid()
     show_widgets()
@@ -249,6 +254,11 @@ def refresh_option_lists():
     my_var2.set('Choose a set')
 
 
+def refresh_mvp():
+    vol_24h_percent.configure(text=f'{find_mvp()['vol_change']}%') # refresh MVP
+    mvp_title.configure(text=f'MVP set: {find_mvp()['name']}') # refresh MVP
+
+
 def dollar_to_huf():
     '''refresh global INT variable (dollar_huf) to 1$ worth of huf'''
     global dollar_huf
@@ -256,6 +266,38 @@ def dollar_to_huf():
     dollar_huf_object = c.convert(1, "USD", "HUF")
     dollar_huf_converted = "{:,.0f}".format(dollar_huf_object)
     dollar_huf = int(dollar_huf_converted)
+
+
+def format_currencies(num, currency):
+    if currency == 'HUF':
+        total_currency_str = str(num * dollar_huf)
+        cur = ' Ft.'
+    else:
+        total_currency_str = str(num)
+        cur = '$'
+
+    length = len(total_currency_str)
+    if length == 5:
+        formatted_currency = total_currency_str[:2] + ',' + total_currency_str[2:]
+
+    elif length == 6:
+        formatted_currency = total_currency_str[:3] + ',' + total_currency_str[3:]
+
+    elif length == 7:
+        formatted_currency = total_currency_str[:1] + ',' + total_currency_str[1:4] + ',' + total_currency_str[4:]
+    
+    elif length == 8:
+        formatted_currency = total_currency_str[:2] + ',' + total_currency_str[2:5] + ',' + total_currency_str[5:]
+
+    elif length == 9:
+        formatted_currency = total_currency_str[:3] + ',' + total_currency_str[3:6] + ',' + total_currency_str[6:]
+
+    elif length == 10:
+        formatted_currency = total_currency_str[:1] + ',' + total_currency_str[1:4] + ',' + total_currency_str[4:7] + ',' + total_currency_str[7:]
+    else:
+        return f'{total_currency_str}{cur}'
+    
+    return f'{formatted_currency}{cur}'
 
 
 def calc_portfolio_worth_usd():
@@ -266,8 +308,8 @@ def calc_portfolio_worth_usd():
     for item in opened_data:
         total_usd += item["total$"]
 
-    usd_message = f'{str(total_usd)}$'
-    return usd_message
+    # usd_message = f'{str(total_usd)}$'
+    return format_currencies(total_usd, 'USD')
 
 
 def calc_portfolio_worth_huf():
@@ -278,19 +320,7 @@ def calc_portfolio_worth_huf():
     for item in opened_data:
         total_usd += item["total$"]
 
-    total_huf_str = str(total_usd * dollar_huf)
-    length = len(total_huf_str)
-    if length == 5:
-        formatted_total_huf = total_huf_str[:2] + ',' + total_huf_str[2:]
-
-    elif length == 6:
-        formatted_total_huf = total_huf_str[:3] + ',' + total_huf_str[3:]
-
-    elif length == 7:
-        formatted_total_huf = total_huf_str[:1] + ',' + total_huf_str[1:4] + ',' + total_huf_str[4:]
-    else:
-        return f'{total_huf_str} Ft.'
-    return f'{formatted_total_huf} Ft.'
+    return format_currencies(total_usd, 'HUF')
 
 
 def fetch_crypto_prices():
@@ -375,8 +405,7 @@ def refresh_price():
     dollar_to_huf() # refresh HUF-USD price too
     fetch_crypto_prices() # refresh ETH, SOL, etc.....
     when_price_change() # for refreshing the gui and the json file
-    vol_24h_percent.configure(text=f'{find_mvp()['vol_change']}%') # refresh MVP
-    mvp_title.configure(text=f'MVP set: {find_mvp()['name']}') # refresh MVP
+    refresh_mvp()
     messagebox.showinfo("Information", "Prices Refreshed!")
 
 
