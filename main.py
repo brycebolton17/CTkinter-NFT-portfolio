@@ -37,7 +37,7 @@ window = CTk()
 window.title('NFT Portfolio')
 # window.geometry('1920x1080')
 window.geometry('1440x900')
-#TODO fix screen geometry to start in full screen on every computer
+window.state('zoomed')
 window.minsize(width=300, height=690)
 window.grid_columnconfigure((1,3), weight=1)
 window.grid_columnconfigure(5, weight=9)
@@ -150,7 +150,7 @@ def button_pressed(id):
 
 def when_price_change():
     '''write json file total$, changes portfolio labels'''
-    calculate_dolla()  # re calculate the $, for the total portfolio worth
+    calculate_portfolio()  # re calculate the $, for the total portfolio worth
     portfolio_value_title2.configure(text=calc_portfolio_worth_usd())
     portfolio_value_title3.configure(text=calc_portfolio_worth_huf())
 
@@ -214,15 +214,35 @@ def show_widgets():
         else:
             column = 0
             row = int(item["watchlist_id"] - 2)  # row = id-2
+        # get floor price in $ for item
+        if item["token"] == 'ETH':
+            floor_usd =  int((float(item['token_floor_price']) * crypto_prices["ETH"]))
 
+        elif item["token"] == 'SOL':
+            floor_usd = int((float(item['token_floor_price']) * crypto_prices["SOL"]))
+
+        formatted_floor_usd = format_currencies(floor_usd, 'USD')
         # create the widget and store it in a list
         # TODO design it
         w_frame = CTkFrame(nft_grid, width=200, height=150, fg_color='yellow', corner_radius=15)
-        w_frame.grid_columnconfigure(0, weight=1)
-        #
+        w_frame.grid_columnconfigure((0,1), weight=1)
+        
+        # title
         set_title = CTkLabel(w_frame, text=item["name"], fg_color='red', font=title_font2, width=220, height=60, anchor='w') # , , 
         set_title.grid(row=0, column=0, padx=10, pady=10, sticky='wens', columnspan=2)
+        
+        # attribute labels
+        width = 220
+        heigh = 10
 
+        set_quantity_label = CTkLabel(w_frame, text=f'Quantity: {int(item["quantity"])}', anchor='w') # , , 
+        set_quantity_label.grid(row=1, column=0, padx=10, pady=0, sticky='wens')
+
+        set_floor_label = CTkLabel(w_frame, text=f'Floor price: {item["token_floor_price"]} ETH / {formatted_floor_usd}', anchor='w') # , , 
+        set_floor_label.grid(row=2, column=0, padx=10, pady=0, sticky='wens')
+
+        set_total_label = CTkLabel(w_frame, text=f'Holdings: {format_currencies(item['total$'], 'USD')} / {format_currencies(item['total$'], 'HUF')}', anchor='w') # , , 
+        set_total_label.grid(row=3, column=0, padx=10, pady=0, sticky='wens')
         #
         widget_list.append(w_frame)
         w_frame.grid(column=column, row=row, pady=15, padx=30, ipadx=0)
@@ -270,7 +290,7 @@ def dollar_to_huf():
 
 def format_currencies(num, currency):
     if currency == 'HUF':
-        total_currency_str = str(num * dollar_huf)
+        total_currency_str = str(num * dollar_huf) # converts here also
         cur = ' Ft.'
     else:
         total_currency_str = str(num)
@@ -355,7 +375,8 @@ def fetch_crypto_prices():
         }
 
 
-def calculate_dolla():
+def calculate_portfolio():
+    '''read and convert floor prices to usd, sums the $ by set, and sums in HUF too'''
     '''read floor price from json file, than convert it to $ + sums it to a total$ key value pair, writes the json file'''
     opened_data = readjson()
 
@@ -366,15 +387,19 @@ def calculate_dolla():
 
         if item["token"] == 'ETH':
             item["total$"] = int(total_worth_token * crypto_prices["ETH"]) # i change to INT here, to leave decimals out later
+            # item["total_huf"] = int(item['total$']*dollar_huf)
 
         elif item["token"] == 'SOL':
             item["total$"] = int(total_worth_token * crypto_prices["SOL"])
+            # item["total_huf"] = int(item['total$']*dollar_huf)
 
         elif item["token"] == 'MATIC':
             item["total$"] = int(total_worth_token * crypto_prices["MATIC"])
+            # item["total_huf"] = int(item['total$']*dollar_huf)
         
         else:
             item["total$"] = 0
+            # item["total_huf"] = 0
 
     writejson(opened_data)
 
@@ -543,7 +568,7 @@ def opensea_url_validator():
 dollar_to_huf()
 fetch_crypto_prices()
 # refresh_price() dont do it in the start, app opens only after prices fetched
-calculate_dolla()
+calculate_portfolio()
 # options_list = options()
 #|||||||||||||||||||||||||||||||||||||    FRONTEND    ||||||||||||||||||||||||||||||||||||||||||||||||||
 
