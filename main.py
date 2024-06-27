@@ -575,7 +575,7 @@ nft_grid.grid(rowspan=6, row=0, column=2, sticky='wens', pady=20, padx=0, ipadx=
 
 # create watchlist editor frame and contents
 watchlist = CTkFrame(window, fg_color='red', corner_radius=20)
-watchlist.grid(row=0, column=4, padx=20, pady=20, sticky='wens')
+watchlist.grid(row=0, column=4, padx=20, pady=20, sticky='wen', rowspan=3)
 
 padding_label1 = CTkLabel(watchlist, text='')
 padding_label1.grid(row=0, column=0, columnspan=2, pady=0, padx=20)
