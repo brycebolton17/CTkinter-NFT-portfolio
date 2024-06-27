@@ -147,6 +147,7 @@ def button_pressed(id):
         # CTkMessagebox(title="Error", message=f'{choosen_quantity} is not a number!', icon="cancel")
         messagebox.showwarning('error', f'{choosen_quantity} is not a number!')
 
+
 def when_price_change():
     '''write json file total$, changes portfolio labels'''
     calculate_dolla()  # re calculate the $, for the total portfolio worth
@@ -157,15 +158,16 @@ def when_price_change():
     # reset options menu
     my_var1.set('Choose a set')
     collection_optionsmenu.configure(text_color='#565b5d')
-
     # FUTURE #TODO: refresh all nft cards value too
 
 
-def remove_watchlist(target):
+def remove_watchlist():
     '''input nftset name, removes that nft set from the app_data.json file and rearranges the higher index elements id in the json file'''
-    # with open (app_data, 'r') as appdata:
-    #     app_data_list = json.load(appdata)
     app_data_list = readjson()
+    target = my_var2.get()
+    if target == 'Choose a set':
+        messagebox.showwarning('error', 'Choose a set first!')
+        return
 
     # find id of target set
     target_id = 0
@@ -182,6 +184,8 @@ def remove_watchlist(target):
             new_list_without_target.append(item)
     #
     writejson(new_list_without_target)
+    destroy_nftgrid()
+    show_widgets()
 
 
 def show_widgets():
@@ -209,10 +213,18 @@ def show_widgets():
         # TODO design it
         w_frame = CTkFrame(nft_grid, width=200, height=150, fg_color='yellow', corner_radius=15)
         w_frame.grid_columnconfigure(0, weight=1)
+        #
         new_label = CTkLabel(w_frame, text=item["name"], fg_color='yellow', width=220, height=120)
         new_label.grid(row=0, column=0, padx=10, pady=10)
+
+        #
         widget_list.append(w_frame)
         w_frame.grid(column=column, row=row, pady=15, padx=30)
+
+
+def destroy_nftgrid():
+    for item in widget_list:
+        item.destroy()
 
 
 #|||||||||||||||||||||||||||||||||||||    BACKEND FUNCTIONS    ||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -222,10 +234,12 @@ def readjson():
         opened_data = json.load(datajson)
     return opened_data
 
+
 def writejson(json_list):
     '''include the modified list of the json file'''
     with open(data, 'w') as datajson:
         json.dump(json_list, datajson, indent=4)
+
 
 def dollar_to_huf():
     '''refresh global INT variable (dollar_huf) to 1$ worth of huf'''
@@ -270,6 +284,7 @@ def calc_portfolio_worth_huf():
         return f'{total_huf_str} Ft.'
     return f'{formatted_total_huf} Ft.'
 
+
 def fetch_crypto_prices():
     '''refreshes the global dictionary of crypto live prices'''
     # GPT
@@ -300,6 +315,7 @@ def fetch_crypto_prices():
             'error': 'Failed to fetch prices',
             'status_code': response.status_code
         }
+
 
 def calculate_dolla():
     '''read floor price from json file, than convert it to $ + sums it to a total$ key value pair, writes the json file'''
@@ -406,7 +422,9 @@ def get_magiceden_price(required_format_name):
 def find_mvp():
     '''only opensea nft play, check json file for the MVP set name and volume%, returns them in a dictionary'''
     current_biggest = 0.00
+    current_minus = -1.00
     mvp = ''
+    mvp2 = ''
     opened_data = readjson()
 
     for item in opened_data:
@@ -415,12 +433,21 @@ def find_mvp():
             current_biggest = set_vol
             mvp = item["name"]
 
-    mvp = {
+        elif set_vol < 0.00 and set_vol > current_minus:
+            current_minus = set_vol
+            mvp2 = item["name"]
+
+    if mvp == '':
+        mvp = mvp2
+        current_biggest = current_minus
+        # TODO change text color to red on mvp frame
+
+    mvp_dict = {
         'name': mvp,
         'vol_change': current_biggest
     }
 
-    return mvp
+    return mvp_dict
 
 
 def is_float(str):
@@ -505,11 +532,11 @@ sidebar.grid_columnconfigure((0,1), uniform='a')
 
 sidebar_title = CTkLabel(sidebar, text='Edit Wallet', font=title_font, anchor='w', padx=20)
 sidebar_title.grid(row=0, column=0, columnspan=2, pady=20, sticky='wens')
+
     # create the options menu
 options_list = options()
 my_var1 = StringVar()
 my_var1.set('Choose a set')
-
 collection_optionsmenu = CTkOptionMenu(sidebar, width=220, button_color='grey', button_hover_color='white', fg_color='white', values=options_list, variable=my_var1, command=opmenu_text, text_color='#565b5d')
 collection_optionsmenu.grid(row=1, column=0, pady=0, sticky='w', padx=20, columnspan=2)
 
@@ -553,8 +580,8 @@ watchlist.grid(row=0, column=4, padx=20, pady=20, sticky='wens')
 padding_label1 = CTkLabel(watchlist, text='')
 padding_label1.grid(row=0, column=0, columnspan=2, pady=0, padx=20)
 
-opensea_title = CTkLabel(watchlist, text='Add to Watchlist', font=title_font)
-opensea_title.grid(row=1, column=0, columnspan=2, pady=0, padx=20, sticky='w')
+watchlist_title = CTkLabel(watchlist, text='Add to Watchlist', font=title_font)
+watchlist_title.grid(row=1, column=0, columnspan=2, pady=0, padx=20, sticky='w')
 
 watching_list_message = CTkLabel(watchlist, text='(Watchlist items can be added to wallet later)', text_color='black')
 watching_list_message.grid(row=2, column=0, columnspan=2, pady=0, padx=20)
@@ -570,7 +597,25 @@ url_entry.grid(row=5, column=0, columnspan=2, pady=2, padx=20, sticky='w')
 
 submit_button = CTkButton(watchlist, text='SUBMIT', command=opensea_url_validator)
 submit_button.grid(row=6, column=0, pady=2, padx=20, sticky='w')
+#
+padding_label3 = CTkLabel(watchlist, text='')
+padding_label3.grid(row=7, column=0, columnspan=2, pady=20, padx=20)
 
+remove_watchlist_title = CTkLabel(watchlist, text='Remove from Watchlist', font=title_font)
+remove_watchlist_title.grid(row=8, column=0, columnspan=2, pady=10, padx=20, sticky='w')
+
+    # create the options menu
+options_list2 = options()
+my_var2 = StringVar()
+my_var2.set('Choose a set')
+collection_optionsmenu2 = CTkOptionMenu(watchlist, button_color='grey', button_hover_color='white', fg_color='white', values=options_list, variable=my_var2, command=opmenu_text, text_color='#565b5d')
+collection_optionsmenu2.grid(row=9, column=0, pady=0, sticky='w', padx=20)
+
+confirm_button = CTkButton(watchlist, text='CONFIRM', command=remove_watchlist)
+confirm_button.grid(row=10, column=0, pady=2, padx=20, sticky='w')
+
+padding_label4 = CTkLabel(watchlist, text='')
+padding_label4.grid(row=11, column=0, columnspan=2, pady=0, padx=20)
 # create an NFT card with image
 # TODO complete the when_price_change() with changing all values in these cards
 
