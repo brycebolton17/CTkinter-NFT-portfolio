@@ -7,7 +7,8 @@
         "token": "ETH",
         "token_floor_price": "9.48",
         "total$": 0,
-        "vol_24": "-0.67"
+        "vol_24": "-0.67",
+        "watchlist_id": 1
     },
     {
         "name": "Lil Pudgy",
@@ -17,7 +18,8 @@
         "token": "ETH",
         "token_floor_price": "0.75",
         "total$": 0,
-        "vol_24": "0.86"
+        "vol_24": "0.86",
+        "watchlist_id": 2
     },
     {
         "name": "Pudgy Rod",
@@ -27,7 +29,8 @@
         "token": "ETH",
         "token_floor_price": "0.19",
         "total$": 0,
-        "vol_24": "-0.74"
+        "vol_24": "-0.74",
+        "watchlist_id": 3
     },
     {
         "name": "Holo Friends",
@@ -37,6 +40,40 @@
         "token": "ETH",
         "token_floor_price": "0.25",
         "total$": 0,
-        "vol_24": "0.00"
+        "vol_24": "0.00",
+        "watchlist_id": 4
+    },
+    {
+        "name": "Lil Buns",
+        "quantity": 0.0,
+        "platform": "opensea",
+        "api_name_format": "hefty-presents",
+        "token": "ETH",
+        "token_floor_price": "0.01",
+        "total$": 0,
+        "vol_24": "-0.72",
+        "watchlist_id": 5
+    },
+    {
+        "name": "Kitaro",
+        "quantity": 0.0,
+        "platform": "opensea",
+        "api_name_format": "kitaroworld",
+        "token": "ETH",
+        "token_floor_price": "0.04",
+        "total$": 0,
+        "vol_24": "-0.29",
+        "watchlist_id": 6
+    },
+    {
+        "name": "Plooshies",
+        "quantity": 0.0,
+        "platform": "opensea",
+        "api_name_format": "theplooshies",
+        "token": "ETH",
+        "token_floor_price": "0.23",
+        "total$": 0,
+        "vol_24": "-0.77",
+        "watchlist_id": 7
     }
 ]

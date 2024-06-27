@@ -186,34 +186,34 @@ def edit_json(target):
 
 def show_widgets():
     '''build the widgets from the json file'''
-    with open (app_data, 'r') as appdata:
-        app_data_list = json.load(appdata)
+    app_data_list = readjson()
 
     for item in app_data_list:
-        if item["id"] % 2 == 0:  # if id is even (paros), column=1
+        if item["watchlist_id"] % 2 == 0:  # if id is even (paros), column=1
             column = 1
-            row = int(item["id"] / 2)  # row = id/2
+            row = int(item["watchlist_id"] / 2)  # row = id/2
          
-        elif item["id"] == 1: 
+        elif item["watchlist_id"] == 1: 
             column = 0
             row = 1
 
-        elif item["id"] == 3: 
+        elif item["watchlist_id"] == 3: 
             column = 0
             row = 2
 
         else:
             column = 0
-            row = int(item["id"] - 2)  # row = id-2
+            row = int(item["watchlist_id"] - 2)  # row = id-2
 
         # create the widget and store it in a list
         # TODO design it
         w_frame = CTkFrame(nft_grid, width=200, height=150, fg_color='yellow', corner_radius=15)
         w_frame.grid_columnconfigure(0, weight=1)
-        new_label = CTkLabel(w_frame, text=item["set"], fg_color='yellow', width=220, height=120)
+        new_label = CTkLabel(w_frame, text=item["name"], fg_color='yellow', width=220, height=120)
         new_label.grid(row=0, column=0, padx=10, pady=10)
         widget_list.append(w_frame)
         w_frame.grid(column=column, row=row, pady=15, padx=30)
+
 
 #|||||||||||||||||||||||||||||||||||||    BACKEND FUNCTIONS    ||||||||||||||||||||||||||||||||||||||||||||||||||
 def readjson():
@@ -446,6 +446,8 @@ def opensea_url_validator():
                 if item['api_name_format'] == set_name:
                     messagebox.showwarning('error', f'{item['name']} already in Watchlist!')
                     return
+                last_watchlist_id = item['watchlist_id']
+            wallet_id = last_watchlist_id + 1
             #
             wallet_list.append({
                 "name": set_name_entry.get(),
@@ -455,11 +457,14 @@ def opensea_url_validator():
                 "token": "ETH",
                 "token_floor_price": api_response['floor'],
                 "total$": 0,
-                "vol_24": api_response['vol24']
+                "vol_24": api_response['vol24'],
+                "watchlist_id": wallet_id
             })
             #
             writejson(wallet_list)
+            messagebox.showinfo('noerror', f'{set_name_entry.get()} added to Watchlist!')
             # TODO append and sort alphabetically the options list
+            # TODO empty the entry boxes in watchlist frame
         
         else:
             messagebox.showwarning('error', 'API error, double check the URL!')
