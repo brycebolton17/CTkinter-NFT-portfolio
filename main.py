@@ -184,6 +184,7 @@ def remove_watchlist():
             new_list_without_target.append(item)
     #
     writejson(new_list_without_target)
+    refresh_option_lists()
     destroy_nftgrid()
     show_widgets()
 
@@ -214,12 +215,12 @@ def show_widgets():
         w_frame = CTkFrame(nft_grid, width=200, height=150, fg_color='yellow', corner_radius=15)
         w_frame.grid_columnconfigure(0, weight=1)
         #
-        new_label = CTkLabel(w_frame, text=item["name"], fg_color='yellow', width=220, height=120)
-        new_label.grid(row=0, column=0, padx=10, pady=10)
+        set_title = CTkLabel(w_frame, text=item["name"], fg_color='red', font=title_font2, width=220, height=60, anchor='w') # , , 
+        set_title.grid(row=0, column=0, padx=10, pady=10, sticky='wens', columnspan=2)
 
         #
         widget_list.append(w_frame)
-        w_frame.grid(column=column, row=row, pady=15, padx=30)
+        w_frame.grid(column=column, row=row, pady=15, padx=30, ipadx=0)
 
 
 def destroy_nftgrid():
@@ -239,6 +240,13 @@ def writejson(json_list):
     '''include the modified list of the json file'''
     with open(data, 'w') as datajson:
         json.dump(json_list, datajson, indent=4)
+
+
+def refresh_option_lists():
+    collection_optionsmenu.configure(values=options())
+    collection_optionsmenu2.configure(values=options())
+    my_var1.set('Choose a set')
+    my_var2.set('Choose a set')
 
 
 def dollar_to_huf():
@@ -492,7 +500,9 @@ def opensea_url_validator():
             messagebox.showinfo('noerror', f'{set_name_entry.get()} added to Watchlist!')
             # TODO append and sort alphabetically the options list
             # TODO empty the entry boxes in watchlist frame
-        
+            set_name_entry.delete(0, END)
+            url_entry.delete(0, END)
+
         else:
             messagebox.showwarning('error', 'API error, double check the URL!')
 
@@ -505,7 +515,7 @@ dollar_to_huf()
 fetch_crypto_prices()
 # refresh_price() dont do it in the start, app opens only after prices fetched
 calculate_dolla()
-
+# options_list = options()
 #|||||||||||||||||||||||||||||||||||||    FRONTEND    ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 # create mvp frame and contents
@@ -534,19 +544,18 @@ sidebar_title = CTkLabel(sidebar, text='Edit Wallet', font=title_font, anchor='w
 sidebar_title.grid(row=0, column=0, columnspan=2, pady=20, sticky='wens')
 
     # create the options menu
-options_list = options()
 my_var1 = StringVar()
 my_var1.set('Choose a set')
-collection_optionsmenu = CTkOptionMenu(sidebar, width=220, button_color='grey', button_hover_color='white', fg_color='white', values=options_list, variable=my_var1, command=opmenu_text, text_color='#565b5d')
+collection_optionsmenu = CTkOptionMenu(sidebar, width=220, button_color='grey', button_hover_color='white', fg_color='white', values=options(), variable=my_var1, command=opmenu_text, text_color='#565b5d')
 collection_optionsmenu.grid(row=1, column=0, pady=0, sticky='w', padx=20, columnspan=2)
 
 quantity_entry = CTkEntry(sidebar, placeholder_text='Quantity (for example: 1 or 0.5)', fg_color='white', text_color='black', width=220, border_width=2)
 quantity_entry.grid(row=2, column=0, pady=10, sticky='w', padx=20, columnspan=2)
 
-add_button = CTkButton(sidebar, text='ADD', width=100, fg_color=green_color, hover_color='#0b6e4f', command=lambda: button_pressed('add'))
+add_button = CTkButton(sidebar, text='BUY', width=100, fg_color=green_color, hover_color='#0b6e4f', command=lambda: button_pressed('add'))
 add_button.grid(row=3, column=0, pady=0, sticky='w', padx=20, columnspan=1)
 
-remove_button = CTkButton(sidebar, text='REMOVE', width=100, fg_color=red_color, hover_color=dark_red_color, command=lambda: button_pressed('remove'))
+remove_button = CTkButton(sidebar, text='SELL', width=100, fg_color=red_color, hover_color=dark_red_color, command=lambda: button_pressed('remove'))
 remove_button.grid(row=3, column=1, pady=0, sticky='w', padx=0, columnspan=1)
 
 refresh_button = CTkButton(sidebar, text='REFRESH', width=100, fg_color='grey', hover_color='#0b6e4f', command=refresh_price)
@@ -605,10 +614,9 @@ remove_watchlist_title = CTkLabel(watchlist, text='Remove from Watchlist', font=
 remove_watchlist_title.grid(row=8, column=0, columnspan=2, pady=10, padx=20, sticky='w')
 
     # create the options menu
-options_list2 = options()
 my_var2 = StringVar()
 my_var2.set('Choose a set')
-collection_optionsmenu2 = CTkOptionMenu(watchlist, button_color='grey', button_hover_color='white', fg_color='white', values=options_list, variable=my_var2, command=opmenu_text, text_color='#565b5d')
+collection_optionsmenu2 = CTkOptionMenu(watchlist, button_color='grey', button_hover_color='white', fg_color='white', values=options(), variable=my_var2, command=opmenu_text, text_color='#565b5d')
 collection_optionsmenu2.grid(row=9, column=0, pady=0, sticky='w', padx=20)
 
 confirm_button = CTkButton(watchlist, text='CONFIRM', command=remove_watchlist)
