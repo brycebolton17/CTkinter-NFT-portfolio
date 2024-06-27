@@ -161,28 +161,28 @@ def when_price_change():
     # FUTURE #TODO: refresh all nft cards value too
 
 
-def edit_json(target):
+def remove_watchlist(target):
     '''input nftset name, removes that nft set from the app_data.json file and rearranges the higher index elements id in the json file'''
-    with open (app_data, 'r') as appdata:
-        app_data_list = json.load(appdata)
-    
+    # with open (app_data, 'r') as appdata:
+    #     app_data_list = json.load(appdata)
+    app_data_list = readjson()
 
     # find id of target set
     target_id = 0
     for item in app_data_list:
-        if item['set'] == target:
-            target_id = item["id"]
+        if item['name'] == target:
+            target_id = item["watchlist_id"]
 
     # create new list with changing id and ignoring the target set
     new_list_without_target = []
     for item in app_data_list:
-        if not item['set'] == target: # add {} item to the new list if not the target set
-            if item["id"] > target_id: # change the id by substracting 1 if bigger than the removed id
-                item["id"] -= 1
+        if not item['name'] == target: # add {} item to the new list if not the target set
+            if item["watchlist_id"] > target_id: # change the id by substracting 1 if bigger than the removed id
+                item["watchlist_id"] -= 1
             new_list_without_target.append(item)
     #
-    with open(app_data, 'w') as appdata:
-        json.dump(new_list_without_target, appdata, indent=4)
+    writejson(new_list_without_target)
+
 
 def show_widgets():
     '''build the widgets from the json file'''
