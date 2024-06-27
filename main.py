@@ -624,6 +624,9 @@ portfolio_value_title3.grid(row=1, column=0, padx=0, pady=10, sticky='ens', colu
 nft_grid = CTkScrollableFrame(window, corner_radius=20, fg_color=lightblue_color)
 nft_grid.grid(rowspan=6, row=0, column=2, sticky='wens', pady=20, padx=0, ipadx=200)
 
+nft_grid_maintitle = CTkLabel(nft_grid, text='Watchlist items', font=title_font)
+nft_grid_maintitle.grid(row=0, column=0, columnspan=2, pady=10)
+
 # create watchlist editor frame and contents
 watchlist = CTkFrame(window, fg_color='red', corner_radius=20)
 watchlist.grid(row=0, column=4, padx=20, pady=20, sticky='wen', rowspan=3)

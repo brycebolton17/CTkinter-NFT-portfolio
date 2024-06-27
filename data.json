@@ -1,14 +1,14 @@
 [
     {
         "name": "Pudgy Penguins",
-        "quantity": 1.0,
+        "quantity": 0.0,
         "platform": "opensea",
         "api_name_format": "pudgypenguins",
         "token": "ETH",
         "token_floor_price": 9.46,
-        "usd_floor_price": 32580,
-        "total$": 32580,
-        "vol_24": -0.2,
+        "usd_floor_price": 32562,
+        "total$": 0,
+        "vol_24": -0.14,
         "watchlist_id": 1
     },
     {
@@ -18,10 +18,22 @@
         "api_name_format": "lilpudgys",
         "token": "ETH",
         "token_floor_price": 0.78,
-        "usd_floor_price": 2686,
+        "usd_floor_price": 2684,
         "total$": 0,
-        "vol_24": -0.51,
+        "vol_24": -0.49,
         "watchlist_id": 2
+    },
+    {
+        "name": "Pudgy Rod",
+        "quantity": 0.0,
+        "platform": "opensea",
+        "api_name_format": "pudgyrods",
+        "token": "ETH",
+        "token_floor_price": 0.18,
+        "usd_floor_price": 619,
+        "total$": 0,
+        "vol_24": 1.05,
+        "watchlist_id": 3
     },
     {
         "name": "Holo Friends",
@@ -30,10 +42,22 @@
         "api_name_format": "holofriendsnft",
         "token": "ETH",
         "token_floor_price": 0.25,
-        "usd_floor_price": 861,
         "total$": 0,
         "vol_24": 0.0,
-        "watchlist_id": 3
+        "watchlist_id": 4,
+        "usd_floor_price": 860
+    },
+    {
+        "name": "Kitaro",
+        "quantity": 0.0,
+        "platform": "opensea",
+        "api_name_format": "kitaroworld",
+        "token": "ETH",
+        "token_floor_price": 0.04,
+        "total$": 0,
+        "vol_24": 0.69,
+        "watchlist_id": 5,
+        "usd_floor_price": 137
     },
     {
         "name": "Plooshies",
@@ -42,21 +66,33 @@
         "api_name_format": "theplooshies",
         "token": "ETH",
         "token_floor_price": 0.2,
-        "usd_floor_price": 688,
         "total$": 0,
         "vol_24": 0.0,
-        "watchlist_id": 4
+        "watchlist_id": 6,
+        "usd_floor_price": 688
     },
     {
-        "name": "MM",
-        "quantity": 3.0,
+        "name": "Lil Buns",
+        "quantity": 0.0,
         "platform": "opensea",
-        "api_name_format": "milady",
+        "api_name_format": "hefty-presents",
         "token": "ETH",
-        "token_floor_price": 5.48,
-        "usd_floor_price": 18873,
-        "total$": 56619,
-        "vol_24": 0.22,
-        "watchlist_id": 5
+        "token_floor_price": 0.01,
+        "total$": 0,
+        "vol_24": 0.93,
+        "watchlist_id": 7,
+        "usd_floor_price": 34
+    },
+    {
+        "name": "BAYC",
+        "quantity": 0.0,
+        "platform": "opensea",
+        "api_name_format": "boredapeyachtclub",
+        "token": "ETH",
+        "token_floor_price": 9.39,
+        "usd_floor_price": 32321,
+        "total$": 0,
+        "vol_24": 0.45,
+        "watchlist_id": 8
     }
 ]
