@@ -6,8 +6,8 @@
         "api_name_format": "pudgypenguins",
         "token": "ETH",
         "token_floor_price": 9.46,
-        "usd_floor_price": 32592,
-        "total$": 32592,
+        "usd_floor_price": 32580,
+        "total$": 32580,
         "vol_24": -0.2,
         "watchlist_id": 1
     },
@@ -18,7 +18,7 @@
         "api_name_format": "lilpudgys",
         "token": "ETH",
         "token_floor_price": 0.78,
-        "usd_floor_price": 2687,
+        "usd_floor_price": 2686,
         "total$": 0,
         "vol_24": -0.51,
         "watchlist_id": 2
@@ -42,22 +42,10 @@
         "api_name_format": "theplooshies",
         "token": "ETH",
         "token_floor_price": 0.2,
-        "usd_floor_price": 689,
+        "usd_floor_price": 688,
         "total$": 0,
         "vol_24": 0.0,
         "watchlist_id": 4
-    },
-    {
-        "name": "Punk",
-        "quantity": 0.0,
-        "platform": "opensea",
-        "api_name_format": "cryptopunks",
-        "token": "ETH",
-        "token_floor_price": 0.0,
-        "usd_floor_price": 0,
-        "total$": 0,
-        "vol_24": -0.13,
-        "watchlist_id": 5
     },
     {
         "name": "MM",
@@ -66,9 +54,9 @@
         "api_name_format": "milady",
         "token": "ETH",
         "token_floor_price": 5.48,
-        "usd_floor_price": 18880,
-        "total$": 56640,
+        "usd_floor_price": 18873,
+        "total$": 56619,
         "vol_24": 0.22,
-        "watchlist_id": 6
+        "watchlist_id": 5
     }
 ]

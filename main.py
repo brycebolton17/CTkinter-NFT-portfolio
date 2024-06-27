@@ -154,16 +154,11 @@ def opmenu_text(selected_value): # important to add a kwarg, to enable def to ac
     collection_optionsmenu.configure(variable=my_var1, text_color='black')
 
 
-# def refresh_option_lists():
-    
-
-
 def refresh_mvp():
     vol_24h_percent.configure(text=f'{find_mvp()['vol_change']}%') # refresh MVP
     mvp_title.configure(text=f'MVP set: {find_mvp()['name']}') # refresh MVP
 
 
-# TODO re do this function
 def refresh_gui(source):
     ''''''
     convert_floor() # updates floor price in $
@@ -265,6 +260,9 @@ def build_nftgrid():
 
         set_total_label = CTkLabel(w_frame, text=f'Holdings: {format_currencies(item['total$'], 'USD')} / {format_currencies(item['total$'], 'HUF')}', anchor='w') # , , 
         set_total_label.grid(row=3, column=0, padx=10, pady=0, sticky='wens')
+
+        set_vol24_label = CTkLabel(w_frame, text=f'Volume change (24h): {item['vol_24']}%', anchor='w') # , , 
+        set_vol24_label.grid(row=4, column=0, padx=10, pady=0, sticky='wens')
         #
         widget_list.append(w_frame)
         w_frame.grid(column=column, row=row, pady=15, padx=30, ipadx=0)
