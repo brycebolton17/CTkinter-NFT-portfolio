@@ -39,8 +39,8 @@ window.title('NFT Portfolio')
 window.geometry('1440x900')
 #TODO fix screen geometry to start in full screen on every computer
 window.minsize(width=300, height=690)
-window.grid_columnconfigure(1, weight=1)
-window.grid_columnconfigure(4, weight=9)
+window.grid_columnconfigure((1,3), weight=1)
+window.grid_columnconfigure(5, weight=9)
 window.grid_rowconfigure((1,3,5), weight=1)
 window.grid_rowconfigure((2), weight=10)
 
@@ -184,7 +184,7 @@ def edit_json(target):
     with open(app_data, 'w') as appdata:
         json.dump(new_list_without_target, appdata, indent=4)
 
-def show_widgets(): # in the json file start "id" from 3 instead of 1
+def show_widgets():
     '''build the widgets from the json file'''
     with open (app_data, 'r') as appdata:
         app_data_list = json.load(appdata)
@@ -193,8 +193,7 @@ def show_widgets(): # in the json file start "id" from 3 instead of 1
         if item["id"] % 2 == 0:  # if id is even (paros), column=1
             column = 1
             row = int(item["id"] / 2)  # row = id/2
-
-        # this 2 elifs live because row 0 used by buttons, later might be useless            
+         
         elif item["id"] == 1: 
             column = 0
             row = 1
@@ -205,9 +204,10 @@ def show_widgets(): # in the json file start "id" from 3 instead of 1
 
         else:
             column = 0
-            row = int(item["id"] - 2)  # row = id-1
+            row = int(item["id"] - 2)  # row = id-2
 
         # create the widget and store it in a list
+        # TODO design it
         w_frame = CTkFrame(nft_grid, width=200, height=150, fg_color='yellow', corner_radius=15)
         w_frame.grid_columnconfigure(0, weight=1)
         new_label = CTkLabel(w_frame, text=item["set"], fg_color='yellow', width=220, height=120)
@@ -541,30 +541,29 @@ portfolio_value_title3.grid(row=1, column=0, padx=0, pady=10, sticky='ens', colu
 nft_grid = CTkScrollableFrame(window, corner_radius=20, fg_color=lightblue_color)
 nft_grid.grid(rowspan=6, row=0, column=2, sticky='wens', pady=20, padx=0, ipadx=200)
 
-# create opensea validator frame and contents
-opensea_sidebar = CTkFrame(window, fg_color='red', corner_radius=20)
-opensea_sidebar.grid(row=0, column=3, padx=20, pady=20, sticky='wens')
+# create watchlist editor frame and contents
+watchlist = CTkFrame(window, fg_color='red', corner_radius=20)
+watchlist.grid(row=0, column=4, padx=20, pady=20, sticky='wens')
 
-# opensea_title = CTkLabel(opensea_sidebar, text='Watch Opensea NFT set', font=title_font)
-padding_label1 = CTkLabel(opensea_sidebar, text='')
+padding_label1 = CTkLabel(watchlist, text='')
 padding_label1.grid(row=0, column=0, columnspan=2, pady=0, padx=20)
 
-opensea_title = CTkLabel(opensea_sidebar, text='Add to Watchlist', font=title_font)
+opensea_title = CTkLabel(watchlist, text='Add to Watchlist', font=title_font)
 opensea_title.grid(row=1, column=0, columnspan=2, pady=0, padx=20, sticky='w')
 
-watching_list_message = CTkLabel(opensea_sidebar, text='(Watchlist items can be added to wallet later)', text_color='black')
+watching_list_message = CTkLabel(watchlist, text='(Watchlist items can be added to wallet later)', text_color='black')
 watching_list_message.grid(row=2, column=0, columnspan=2, pady=0, padx=20)
 
-padding_label2 = CTkLabel(opensea_sidebar, text='')
+padding_label2 = CTkLabel(watchlist, text='')
 padding_label2.grid(row=3, column=0, columnspan=2, pady=0, padx=20)
 
-set_name_entry = CTkEntry(opensea_sidebar, placeholder_text='Enter a set name', fg_color='white', text_color='black', border_width=2)
+set_name_entry = CTkEntry(watchlist, placeholder_text='Enter a set name', fg_color='white', text_color='black', border_width=2)
 set_name_entry.grid(row=4, column=0, columnspan=2, pady=0, padx=20, sticky='w')
 
-url_entry = CTkEntry(opensea_sidebar, placeholder_text='paste opensea.io url', fg_color='white', text_color='black', border_width=2)
+url_entry = CTkEntry(watchlist, placeholder_text='paste opensea.io url', fg_color='white', text_color='black', border_width=2)
 url_entry.grid(row=5, column=0, columnspan=2, pady=2, padx=20, sticky='w')
 
-submit_button = CTkButton(opensea_sidebar, text='SUBMIT', command=opensea_url_validator)
+submit_button = CTkButton(watchlist, text='SUBMIT', command=opensea_url_validator)
 submit_button.grid(row=6, column=0, pady=2, padx=20, sticky='w')
 
 # create an NFT card with image
