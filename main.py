@@ -442,6 +442,10 @@ def opensea_url_validator():
         api_response = get_opensea_price(set_name)
         if not api_response == 'api error':
             wallet_list = readjson()
+            for item in wallet_list:
+                if item['api_name_format'] == set_name:
+                    messagebox.showwarning('error', f'{item['name']} already in watching list!')
+                    return
             #
             wallet_list.append({
                 "name": set_name_entry.get(),
@@ -456,6 +460,9 @@ def opensea_url_validator():
             #
             writejson(wallet_list)
             # TODO append and sort alphabetically the options list
+        
+        else:
+            messagebox.showwarning('error', 'API error, double check the URL!')
 
     else:
         messagebox.showwarning('error', 'Not an opensea URL!')
@@ -538,18 +545,27 @@ nft_grid.grid(rowspan=6, row=0, column=2, sticky='wens', pady=20, padx=0, ipadx=
 opensea_sidebar = CTkFrame(window, fg_color='red', corner_radius=20)
 opensea_sidebar.grid(row=0, column=3, padx=20, pady=20, sticky='wens')
 
-opensea_title = CTkLabel(opensea_sidebar, text='Watch Opensea NFT set', font=title_font)
-opensea_title.grid(row=0, column=0, columnspan=2, pady=20, padx=20)
+# opensea_title = CTkLabel(opensea_sidebar, text='Watch Opensea NFT set', font=title_font)
+padding_label1 = CTkLabel(opensea_sidebar, text='')
+padding_label1.grid(row=0, column=0, columnspan=2, pady=0, padx=20)
+
+opensea_title = CTkLabel(opensea_sidebar, text='Add to Watching List', font=title_font)
+opensea_title.grid(row=1, column=0, columnspan=2, pady=0, padx=20, sticky='w')
+
+watching_list_message = CTkLabel(opensea_sidebar, text='(Watching list items can be added to wallet later)', text_color='black')
+watching_list_message.grid(row=2, column=0, columnspan=2, pady=0, padx=20)
+
+padding_label2 = CTkLabel(opensea_sidebar, text='')
+padding_label2.grid(row=3, column=0, columnspan=2, pady=0, padx=20)
 
 set_name_entry = CTkEntry(opensea_sidebar, placeholder_text='Enter a set name', fg_color='white', text_color='black', border_width=2)
-set_name_entry.grid(row=1, column=0, columnspan=2, pady=0, padx=20, sticky='w')
+set_name_entry.grid(row=4, column=0, columnspan=2, pady=0, padx=20, sticky='w')
 
 url_entry = CTkEntry(opensea_sidebar, placeholder_text='paste opensea.io url', fg_color='white', text_color='black', border_width=2)
-url_entry.grid(row=2, column=0, columnspan=2, pady=2, padx=20, sticky='w')
-
+url_entry.grid(row=5, column=0, columnspan=2, pady=2, padx=20, sticky='w')
 
 submit_button = CTkButton(opensea_sidebar, text='SUBMIT', command=opensea_url_validator)
-submit_button.grid(row=3, column=0, pady=2, padx=20, sticky='w')
+submit_button.grid(row=6, column=0, pady=2, padx=20, sticky='w')
 
 # create an NFT card with image
 # TODO complete the when_price_change() with changing all values in these cards
