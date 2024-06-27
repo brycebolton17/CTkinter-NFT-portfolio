@@ -10,19 +10,20 @@ import json
 import time
 import os
 
-# Load environment variables from .env file (APIs in this case)
-load_dotenv()
+
 
 # API 
 opensea_api = "" # enter your opensea API key here
 
-
-#opensea_api = os.getenv('API_OPENSEA') # uncomment if api added manually 3 lines above
-#magiceden_bearer = os.getenv('MAGICEDEN_BEARER') # uncomment if api added manually 2 lines above
+# Load environment variables from .env file (APIs in this case)
+load_dotenv()
+opensea_api = os.getenv('API_OPENSEA') # uncomment if api added manually 3 lines above
+magiceden_bearer = os.getenv('MAGICEDEN_BEARER') # uncomment if api added manually 2 lines above
 
 # global vars
-# magiceden_bearer = ""
 data = 'data.json'
+app_data = 'app_data.json'
+
 crypto_prices = {
             'SOL': 0,
             'ETH': 0,
@@ -32,8 +33,10 @@ dollar_huf = 0
 
 # create window
 window = CTk()
-window.title('My App')
-window.geometry('1920x1080')
+window.title('NFT Portfolio')
+# window.geometry('1920x1080')
+window.geometry('1440x900')
+#TODO fix screen geometry to start in full screen on every computer
 window.minsize(width=300, height=690)
 window.grid_columnconfigure(2, weight=1)
 window.grid_rowconfigure((1,3,5), weight=1)
@@ -91,8 +94,7 @@ def compress_image(image_filename):
 
 def options():
     '''returns a list with the nft names from the json file'''
-    with open(data, 'r') as datajson:
-        opened_data = json.load(datajson)
+    opened_data = readjson()
     
     my_list = []
     for item in opened_data:
@@ -107,10 +109,7 @@ def button_pressed(id):
 
     if choosen_quantity.isdigit() or is_float(choosen_quantity):
         if choosen_set != 'Choose a set':
-            
-            with open(data, 'r') as datajson:
-                opened_data = json.load(datajson)
-
+            opened_data = readjson()
             for item in opened_data:
                 if item['name'] == choosen_set:
                     if id == 'add':
@@ -126,8 +125,7 @@ def button_pressed(id):
                             # CTkMessagebox(title="Error", message="NFT quantity can't be minus", icon="cancel")
                             messagebox.showwarning('error', f"You only have {int(item['quantity'])} {item['name']}(s)")
 
-            with open(data, 'w') as datajson:
-                json.dump(opened_data, datajson, indent=4)
+            writejson(opened_data)
             
             when_price_change() # for refreshing the gui and the json file
         else:
@@ -161,6 +159,17 @@ def when_price_change():
     # FUTURE ToDo: refresh all nft cards value too
 
 #|||||||||||||||||||||||||||||||||||||    BACKEND FUNCTIONS    ||||||||||||||||||||||||||||||||||||||||||||||||||
+def readjson():
+    '''read the fresh data from data json file'''
+    with open(data, 'r') as datajson:
+        opened_data = json.load(datajson)
+    return opened_data
+
+def writejson(json_list):
+    '''include the modified list of the json file'''
+    with open(data, 'w') as datajson:
+        json.dump(json_list, datajson, indent=4)
+
 def dollar_to_huf():
     '''refresh global INT variable (dollar_huf) to 1$ worth of huf'''
     global dollar_huf
@@ -173,8 +182,7 @@ def dollar_to_huf():
 def calc_portfolio_worth_usd():
     '''returns the sum of $ the NFT-s worth in str format'''
     total_usd = 0
-    with open(data, 'r') as datajson:
-        opened_data = json.load(datajson)
+    opened_data = readjson()
 
     for item in opened_data:
         total_usd += item["total$"]
@@ -186,8 +194,7 @@ def calc_portfolio_worth_usd():
 def calc_portfolio_worth_huf():
     '''returns the sum of HUF the NFT-s worth in str format'''
     total_usd = 0
-    with open(data, 'r') as datajson:
-        opened_data = json.load(datajson)
+    opened_data = readjson()
 
     for item in opened_data:
         total_usd += item["total$"]
@@ -239,9 +246,7 @@ def fetch_crypto_prices():
 
 def calculate_dolla():
     '''read floor price from json file, than convert it to $ + sums it to a total$ key value pair, writes the json file'''
-
-    with open(data, 'r') as datajson:
-        opened_data = json.load(datajson)
+    opened_data = readjson()
 
     for item in opened_data:
         quantity = item["quantity"] # this is a float already
@@ -260,14 +265,12 @@ def calculate_dolla():
         else:
             item["total$"] = 0
 
-    with open(data, 'w') as datajson:
-        json.dump(opened_data, datajson, indent=4)
+    writejson(opened_data)
 
 
 def refresh_price():
     '''refreshes floor prices in the json file'''
-    with open(data, 'r') as datajson:
-        opened_data = json.load(datajson)
+    opened_data = readjson()
 
     for item in opened_data:
         time.sleep(1)
@@ -286,8 +289,7 @@ def refresh_price():
             # time.sleep(1)
             item["vol_24"] = "0.00"
             
-    with open(data, 'w') as datajson:
-        json.dump(opened_data, datajson, indent=4)
+    writejson(opened_data)
     
     dollar_to_huf() # refresh HUF-USD price too
     fetch_crypto_prices() # refresh ETH, SOL, etc.....
@@ -344,8 +346,7 @@ def find_mvp():
     '''only opensea nft play, check json file for the MVP set name and volume%, returns them in a dictionary'''
     current_biggest = 0.00
     mvp = ''
-    with open(data, 'r') as datajson:
-        opened_data = json.load(datajson)
+    opened_data = readjson()
 
     for item in opened_data:
         set_vol = float(item["vol_24"]) 
@@ -442,7 +443,11 @@ portfolio_value_title3.grid(row=1, column=0, padx=0, pady=10, sticky='ens', colu
 
 # create the nft grid frame and contents
 nft_grid = CTkFrame(window, corner_radius=20, fg_color=lightblue_color)
-nft_grid.grid(rowspan=6, row=0, column=1, sticky='wens', pady=20, padx=20, ipadx=300)
+nft_grid.grid(rowspan=6, row=0, column=1, sticky='wens', pady=20, padx=20, ipadx=200)
+
+#TODO add nft set append panel
+
+# TODO add opensea api key window if api not defined
 
 
 
@@ -455,29 +460,27 @@ nft_grid.grid(rowspan=6, row=0, column=1, sticky='wens', pady=20, padx=20, ipadx
 
 
 
+# create an NFT card with image
+#TODO complete the when_price_change() with changing all values in these cards
 
+    # opening and compressing images
+nft_widget_width = 200
+nft_widget_height = 110
 
-# # create an NFT card with image
-# #! complete the when_price_change() with changing all values in these cards
+card = CTkFrame(nft_grid, corner_radius=20, fg_color='#808080')
+card.pack(padx=10, pady=20)
 
-#     # opening and compressing images
-# nft_widget_width = 200
-# nft_widget_height = 110
+pil = compress_image('Lil Pudgy')
+my_image = CTkImage(light_image=pil, dark_image=pil, size=(nft_widget_width,nft_widget_height))
 
-# card = CTkFrame(nft_grid, corner_radius=20, fg_color='#808080')
-# card.pack(padx=10, pady=20)
+card_image = CTkLabel(card, text='', image=my_image)
+card_image.grid(row=0, column=0, columnspan=2, pady=20, padx=8)
 
-# pil = compress_image('Lil Pudgy')
-# my_image = CTkImage(light_image=pil, dark_image=pil, size=(nft_widget_width,nft_widget_height))
+title = CTkLabel(card, text='Lil Pudgy', font=title_font2, fg_color='red', corner_radius=0)
+title.grid(row=1, column=0, sticky='w', padx=8, pady=2)
 
-# card_image = CTkLabel(card, text='', image=my_image)
-# card_image.grid(row=0, column=0, columnspan=2, pady=20, padx=8)
-
-# title = CTkLabel(card, text='Lil Pudgy', font=title_font2, fg_color='red', corner_radius=0)
-# title.grid(row=1, column=0, sticky='w', padx=8, pady=2)
-
-# title2 = CTkLabel(card, text='')
-# title2.grid(row=2, column=0, pady=15)
+title2 = CTkLabel(card, text='')
+title2.grid(row=2, column=0, pady=15)
 
 
 
