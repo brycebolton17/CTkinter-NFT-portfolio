@@ -68,30 +68,26 @@ lightblue_color = '#5ac4f6'
 
 
 #|||||||||||||||||||||||||||||||||||||    FRONTEND FUNCTIONS    ||||||||||||||||||||||||||||||||||||||||||||||||||
+# dark image enchancer
+# def dark(image):
+#     enhancer = ImageEnhance.Brightness(image)
+#     return enhancer.enhance(0.9)
+
+
+# # image process
+# def compress_image(image_filename):
+#     '''inputs an image, returns the image as ImageTk PhotoImage'''
+#     image_pil = Image.open(f'images/{image_filename}.png')
+#     resized = image_pil.resize((nft_widget_width, nft_widget_height), Image.Resampling.LANCZOS)
+#     darkened = dark(resized)
+#     return darkened
+
+
 # open image as CTk object
 def ctk_image_open(filename):
     image_path = f'images/{filename}.png'
     pil = Image.open(image_path)
     return CTkImage(light_image=pil, dark_image=pil, size=(80, 80))
-
-
-# set options menu text color when changes value
-def opmenu_text(selected_value): # important to add a kwarg, to enable def to accept arguments
-    collection_optionsmenu.configure(variable=my_var1, text_color='black')
-
-
-# dark image enchancer
-def dark(image):
-    enhancer = ImageEnhance.Brightness(image)
-    return enhancer.enhance(0.9)
-
-# image process
-def compress_image(image_filename):
-    '''inputs an image, returns the image as ImageTk PhotoImage'''
-    image_pil = Image.open(f'images/{image_filename}.png')
-    resized = image_pil.resize((nft_widget_width, nft_widget_height), Image.Resampling.LANCZOS)
-    darkened = dark(resized)
-    return darkened
 
 
 def options():
@@ -117,19 +113,21 @@ def button_pressed(id):
                     if id == 'add':
                         item['quantity'] += float(choosen_quantity)
                         messagebox.showinfo("Information", "Item(s) Added!")
+                        writejson(opened_data)
+                        refresh_gui('wallet')
+                        return
 
                     elif id == 'remove':
                         if float(choosen_quantity) <= item['quantity']:
                             item['quantity'] -= float(choosen_quantity)
                             messagebox.showinfo("Information", "Item(s) Removed!")
+                            writejson(opened_data)
+                            refresh_gui('wallet')
+                            return
 
                         else:
                             # CTkMessagebox(title="Error", message="NFT quantity can't be minus", icon="cancel")
                             messagebox.showwarning('error', f"You only have {int(item['quantity'])} {item['name']}(s)")
-
-            writejson(opened_data)
-            
-            when_price_change() # for refreshing the gui and the json file
         else:
             quantity_entry.delete(0, END) # empty the entry box
             # reset options menu
@@ -148,17 +146,51 @@ def button_pressed(id):
         messagebox.showwarning('error', f'{choosen_quantity} is not a number!')
 
 
-def when_price_change():
-    '''write json file total$, changes portfolio labels'''
-    calculate_portfolio()  # re calculate the $, for the total portfolio worth
-    portfolio_value_title2.configure(text=calc_portfolio_worth_usd())
-    portfolio_value_title3.configure(text=calc_portfolio_worth_huf())
 
-    quantity_entry.delete(0, END) # empty the entry box after pressing a button
-    # reset options menu
-    my_var1.set('Choose a set')
-    collection_optionsmenu.configure(text_color='#565b5d')
-    # FUTURE #TODO: refresh all nft cards value too
+
+#|||||||||||||||||||||||||||||||||||||    FRONTEND REFRESH FUNCTIONS    ||||||||||||||||||||||||||||||||||||||||||
+# refresh options menu text color when changes value
+def opmenu_text(selected_value): # important to add a kwarg, to enable def to accept arguments
+    collection_optionsmenu.configure(variable=my_var1, text_color='black')
+
+
+# def refresh_option_lists():
+    
+
+
+def refresh_mvp():
+    vol_24h_percent.configure(text=f'{find_mvp()['vol_change']}%') # refresh MVP
+    mvp_title.configure(text=f'MVP set: {find_mvp()['name']}') # refresh MVP
+
+
+# TODO re do this function
+def refresh_gui(source):
+    ''''''
+    convert_floor() # updates floor price in $
+    total_usd()  # updates the total portfolio worth
+
+    portfolio_value_title2.configure(text=format_currencies(portfolio_total(), 'USD'))  # re calculate total portfolio and refresh label
+    portfolio_value_title3.configure(text=format_currencies(portfolio_total(), 'HUF'))  # re calculate total portfolio and refresh label
+    find_mvp()  # re calculate MVP
+    vol_24h_percent.configure(text=f'{find_mvp()['vol_change']}%')  # refresh mvp title
+    mvp_title.configure(text=f'MVP set: {find_mvp()['name']}')  # refresh mvp percent
+    destroy_nftgrid()
+    build_nftgrid()
+
+    # if buy / sell button pressed
+    if source == 'wallet':
+        quantity_entry.delete(0, END) # empty the entry box after pressing buy / sell button
+        my_var1.set('Choose a set')  # reset options menu
+        collection_optionsmenu.configure(text_color='#565b5d')  # reset options menu color
+
+    # if submit / confirm button pressed
+    elif source == 'watchlist':
+        collection_optionsmenu.configure(values=options())  # refresh option list options to add / remove a set
+        collection_optionsmenu2.configure(values=options())  # refresh option list options to add / remove a set
+        my_var1.set('Choose a set')  # set default option
+        my_var2.set('Choose a set')  # set default option
+        set_name_entry.delete(0, END)
+        url_entry.delete(0, END)
 
 
 def remove_watchlist():
@@ -188,13 +220,10 @@ def remove_watchlist():
     #
     writejson(new_list_without_target)
     messagebox.showinfo('error', f'{target} deleted!')
-    refresh_mvp()
-    refresh_option_lists()
-    destroy_nftgrid()
-    show_widgets()
+    refresh_gui('watchlist')
 
 
-def show_widgets():
+def build_nftgrid():
     '''build the widgets from the json file'''
     app_data_list = readjson()
 
@@ -214,14 +243,7 @@ def show_widgets():
         else:
             column = 0
             row = int(item["watchlist_id"] - 2)  # row = id-2
-        # get floor price in $ for item
-        if item["token"] == 'ETH':
-            floor_usd =  int((float(item['token_floor_price']) * crypto_prices["ETH"]))
-
-        elif item["token"] == 'SOL':
-            floor_usd = int((float(item['token_floor_price']) * crypto_prices["SOL"]))
-
-        formatted_floor_usd = format_currencies(floor_usd, 'USD')
+  
         # create the widget and store it in a list
         # TODO design it
         w_frame = CTkFrame(nft_grid, width=200, height=150, fg_color='yellow', corner_radius=15)
@@ -238,7 +260,7 @@ def show_widgets():
         set_quantity_label = CTkLabel(w_frame, text=f'Quantity: {int(item["quantity"])}', anchor='w') # , , 
         set_quantity_label.grid(row=1, column=0, padx=10, pady=0, sticky='wens')
 
-        set_floor_label = CTkLabel(w_frame, text=f'Floor price: {item["token_floor_price"]} ETH / {formatted_floor_usd}', anchor='w') # , , 
+        set_floor_label = CTkLabel(w_frame, text=f'Floor price: {item["token_floor_price"]} {item['token']} / {format_currencies(item['usd_floor_price'], 'USD')}', anchor='w') # , , 
         set_floor_label.grid(row=2, column=0, padx=10, pady=0, sticky='wens')
 
         set_total_label = CTkLabel(w_frame, text=f'Holdings: {format_currencies(item['total$'], 'USD')} / {format_currencies(item['total$'], 'HUF')}', anchor='w') # , , 
@@ -267,218 +289,8 @@ def writejson(json_list):
         json.dump(json_list, datajson, indent=4)
 
 
-def refresh_option_lists():
-    collection_optionsmenu.configure(values=options())
-    collection_optionsmenu2.configure(values=options())
-    my_var1.set('Choose a set')
-    my_var2.set('Choose a set')
-
-
-def refresh_mvp():
-    vol_24h_percent.configure(text=f'{find_mvp()['vol_change']}%') # refresh MVP
-    mvp_title.configure(text=f'MVP set: {find_mvp()['name']}') # refresh MVP
-
-
-def dollar_to_huf():
-    '''refresh global INT variable (dollar_huf) to 1$ worth of huf'''
-    global dollar_huf
-    c = CurrencyConverter()
-    dollar_huf_object = c.convert(1, "USD", "HUF")
-    dollar_huf_converted = "{:,.0f}".format(dollar_huf_object)
-    dollar_huf = int(dollar_huf_converted)
-
-
-def format_currencies(num, currency):
-    if currency == 'HUF':
-        total_currency_str = str(num * dollar_huf) # converts here also
-        cur = ' Ft.'
-    else:
-        total_currency_str = str(num)
-        cur = '$'
-
-    length = len(total_currency_str)
-    if length == 5:
-        formatted_currency = total_currency_str[:2] + ',' + total_currency_str[2:]
-
-    elif length == 6:
-        formatted_currency = total_currency_str[:3] + ',' + total_currency_str[3:]
-
-    elif length == 7:
-        formatted_currency = total_currency_str[:1] + ',' + total_currency_str[1:4] + ',' + total_currency_str[4:]
-    
-    elif length == 8:
-        formatted_currency = total_currency_str[:2] + ',' + total_currency_str[2:5] + ',' + total_currency_str[5:]
-
-    elif length == 9:
-        formatted_currency = total_currency_str[:3] + ',' + total_currency_str[3:6] + ',' + total_currency_str[6:]
-
-    elif length == 10:
-        formatted_currency = total_currency_str[:1] + ',' + total_currency_str[1:4] + ',' + total_currency_str[4:7] + ',' + total_currency_str[7:]
-    else:
-        return f'{total_currency_str}{cur}'
-    
-    return f'{formatted_currency}{cur}'
-
-
-def calc_portfolio_worth_usd():
-    '''returns the sum of $ the NFT-s worth in str format'''
-    total_usd = 0
-    opened_data = readjson()
-
-    for item in opened_data:
-        total_usd += item["total$"]
-
-    # usd_message = f'{str(total_usd)}$'
-    return format_currencies(total_usd, 'USD')
-
-
-def calc_portfolio_worth_huf():
-    '''returns the sum of HUF the NFT-s worth in str format'''
-    total_usd = 0
-    opened_data = readjson()
-
-    for item in opened_data:
-        total_usd += item["total$"]
-
-    return format_currencies(total_usd, 'HUF')
-
-
-def fetch_crypto_prices():
-    '''refreshes the global dictionary of crypto live prices'''
-    # GPT
-    global crypto_prices
-    url = "https://api.coingecko.com/api/v3/simple/price"
-    params = {
-        'ids': 'solana,ethereum,matic-network',  # Coin IDs for SOL, ETH, and MATIC
-        'vs_currencies': 'usd'             # Currency to fetch prices in
-    }
-    
-    response = requests.get(url, params=params)
-    
-    if response.status_code == 200:
-        prices = response.json()
-        sol_price = prices['solana']['usd']
-        eth_price = prices['ethereum']['usd']
-        matic_price = prices['matic-network']['usd']
-        
-        crypto_prices = {
-            'SOL': sol_price,
-            'ETH': eth_price,
-            'MATIC': matic_price
-        }
-        return
-    
-    else:
-        return {
-            'error': 'Failed to fetch prices',
-            'status_code': response.status_code
-        }
-
-
-def calculate_portfolio():
-    '''read and convert floor prices to usd, sums the $ by set, and sums in HUF too'''
-    '''read floor price from json file, than convert it to $ + sums it to a total$ key value pair, writes the json file'''
-    opened_data = readjson()
-
-    for item in opened_data:
-        quantity = item["quantity"] # this is a float already
-        floor_token = float(item["token_floor_price"])
-        total_worth_token = quantity*floor_token
-
-        if item["token"] == 'ETH':
-            item["total$"] = int(total_worth_token * crypto_prices["ETH"]) # i change to INT here, to leave decimals out later
-            # item["total_huf"] = int(item['total$']*dollar_huf)
-
-        elif item["token"] == 'SOL':
-            item["total$"] = int(total_worth_token * crypto_prices["SOL"])
-            # item["total_huf"] = int(item['total$']*dollar_huf)
-
-        elif item["token"] == 'MATIC':
-            item["total$"] = int(total_worth_token * crypto_prices["MATIC"])
-            # item["total_huf"] = int(item['total$']*dollar_huf)
-        
-        else:
-            item["total$"] = 0
-            # item["total_huf"] = 0
-
-    writejson(opened_data)
-
-
-def refresh_price():
-    '''refreshes floor prices in the json file'''
-    opened_data = readjson()
-
-    for item in opened_data:
-        time.sleep(1)
-        if item["platform"] == "opensea":
-            opensea_dict = get_opensea_price(item["api_name_format"])
-            item["token_floor_price"] = opensea_dict['floor']
-            item["vol_24"] = opensea_dict['vol24']
-
-        if item["platform"] == "coingecko":
-            # item["token_floor_price"] = get_coingecko_price(item["api_name_format"])
-            pass
-
-        if item["platform"] == "magiceden":
-            item["token_floor_price"] = get_magiceden_price(item["api_name_format"])
-            #
-            # time.sleep(1)
-            item["vol_24"] = "0.00"
-            
-    writejson(opened_data)
-    
-    dollar_to_huf() # refresh HUF-USD price too
-    fetch_crypto_prices() # refresh ETH, SOL, etc.....
-    when_price_change() # for refreshing the gui and the json file
-    refresh_mvp()
-    messagebox.showinfo("Information", "Prices Refreshed!")
-
-
 def export_csv():
     messagebox.showinfo("Information", "CSV Exported!")
-
-
-def get_opensea_price(required_format_name):
-    """enter nft collection name, returns dictionary floor price formatted to str, vol24 str"""
-    opensea_url = f"https://api.opensea.io/api/v2/collections/{required_format_name}/stats"
-    opensea_headers = {
-        "accept": "application/json",
-        "x-api-key": opensea_api
-    }
-
-    response = requests.get(opensea_url, headers=opensea_headers)
-
-    if str(response) == '<Response [200]>':
-        data = response.json()
-
-        floor_price = data["total"]["floor_price"]
-        volume_change = data['intervals'][0]['volume_change']
-
-        formatted_volume_change = format(volume_change, ".2f")
-        formatted_floor = format(floor_price, ".2f")
-
-        my_dict = {
-            'floor': formatted_floor,
-            'vol24': formatted_volume_change
-        }
-        return my_dict
-
-    else:
-        return 'api error'
-
-
-def get_magiceden_price(required_format_name):
-    """enter nft collection name, returns floor price formatted to comma"""
-    magiceden_url = f"https://api-mainnet.magiceden.dev/v2/collections/{required_format_name}/stats"
-    magiceden_headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {magiceden_bearer}"
-    }
-    response = requests.get(magiceden_url, headers=magiceden_headers)
-    data = json.loads(response.text)
-    floor_price = data["floorPrice"]
-    formatted_number = "{:,.2f}".format(floor_price / 1000000000)
-    return formatted_number
 
 
 def find_mvp():
@@ -520,6 +332,184 @@ def is_float(str):
             return True
         except ValueError:
             return False
+        
+
+def refresh_price():
+    '''refreshes floor prices in the json file'''
+    opened_data = readjson()
+
+    for item in opened_data:
+        time.sleep(1)
+        if item["platform"] == "opensea":
+            opensea_dict = get_opensea_price(item["api_name_format"])
+            item["token_floor_price"] = opensea_dict['floor']
+            item["vol_24"] = opensea_dict['vol24']
+
+        elif item["platform"] == "magiceden":
+            item["token_floor_price"] = get_magiceden_price(item["api_name_format"])
+            #
+            # time.sleep(1)
+            item["vol_24"] = 0.00
+            
+    writejson(opened_data)
+    
+    dollar_to_huf() # refresh HUF-USD price too
+    fetch_crypto_prices() # refresh ETH, SOL, etc.....
+    messagebox.showinfo("Information", "Prices Refreshed!")
+    refresh_gui('refresh_function')
+#|||||||||||||||||||||||||||||||||||||    CURRENCY CALCULATING / SUM FUNCTIONS    |||||||||||||||||||||||||||||||
+def convert_floor():
+    '''write json with floor prices converted to usd'''
+    my_list = readjson()
+    #
+    for item in my_list:
+        item['usd_floor_price'] = convert_token_usd(item['token_floor_price'], item['token'])
+    #
+    writejson(my_list)
+
+
+def total_usd():
+    my_list = readjson()
+    #
+    for item in my_list:
+        item['total$'] = int(item['usd_floor_price'] * item['quantity'])
+    #
+    writejson(my_list)
+
+
+def portfolio_total():
+    '''returns portfolio value in int, $'''
+    total_usd = 0
+    opened_data = readjson()
+
+    for item in opened_data:
+        total_usd += item["total$"]
+
+    return total_usd
+
+
+def convert_token_usd(token_quantity, currency):
+    '''input token quantity and currency, return int usd'''
+    usd_floor = int(token_quantity * crypto_prices[currency])
+    return usd_floor
+
+
+def format_currencies(num, currency):
+    # input a $ number, and 'USD' or 'HUF'. Return readable format (also converts curreny to huf, when 'HUF' given)
+    if currency == 'HUF':
+        total_currency_str = str(num * dollar_huf) # converts here also
+        cur = ' Ft.'
+    else:
+        total_currency_str = str(num)
+        cur = '$'
+
+    length = len(total_currency_str)
+    if length == 5:
+        formatted_currency = total_currency_str[:2] + ',' + total_currency_str[2:]
+
+    elif length == 6:
+        formatted_currency = total_currency_str[:3] + ',' + total_currency_str[3:]
+
+    elif length == 7:
+        formatted_currency = total_currency_str[:1] + ',' + total_currency_str[1:4] + ',' + total_currency_str[4:]
+    
+    elif length == 8:
+        formatted_currency = total_currency_str[:2] + ',' + total_currency_str[2:5] + ',' + total_currency_str[5:]
+
+    elif length == 9:
+        formatted_currency = total_currency_str[:3] + ',' + total_currency_str[3:6] + ',' + total_currency_str[6:]
+
+    elif length == 10:
+        formatted_currency = total_currency_str[:1] + ',' + total_currency_str[1:4] + ',' + total_currency_str[4:7] + ',' + total_currency_str[7:]
+    else:
+        return f'{total_currency_str}{cur}'
+    
+    return f'{formatted_currency}{cur}'
+
+
+#|||||||||||||||||||||||||||||||||||||    API / ONLINE FUNCTIONS    |||||||||||||||||||||||||||||||||||||||||||||
+def dollar_to_huf():
+    '''refresh global INT variable (dollar_huf) to 1$ worth of huf'''
+    global dollar_huf
+    c = CurrencyConverter()
+    dollar_huf_object = c.convert(1, "USD", "HUF")
+    dollar_huf_converted = "{:,.0f}".format(dollar_huf_object)
+    dollar_huf = int(dollar_huf_converted)
+
+
+def get_opensea_price(required_format_name):
+    """enter nft collection name, returns dictionary floor price formatted to str, vol24 str"""
+    opensea_url = f"https://api.opensea.io/api/v2/collections/{required_format_name}/stats"
+    opensea_headers = {
+        "accept": "application/json",
+        "x-api-key": opensea_api
+    }
+
+    response = requests.get(opensea_url, headers=opensea_headers)
+
+    if str(response) == '<Response [200]>':
+        data = response.json()
+
+        floor_price = data["total"]["floor_price"]
+        volume_change = data['intervals'][0]['volume_change']
+
+        formatted_volume_change = format(volume_change, ".2f")
+        formatted_floor = format(floor_price, ".2f")
+
+        my_dict = {
+            'floor': float(formatted_floor),
+            'vol24': float(formatted_volume_change)
+        }
+        return my_dict
+
+    else:
+        return 'api error'
+
+
+def get_magiceden_price(required_format_name):
+    """enter nft collection name, returns floor price formatted to comma"""
+    magiceden_url = f"https://api-mainnet.magiceden.dev/v2/collections/{required_format_name}/stats"
+    magiceden_headers = {
+        "accept": "application/json",
+        "Authorization": f"Bearer {magiceden_bearer}"
+    }
+    response = requests.get(magiceden_url, headers=magiceden_headers)
+    data = json.loads(response.text)
+    floor_price = data["floorPrice"]
+    formatted_number = "{:,.2f}".format(floor_price / 1000000000)
+    return formatted_number
+
+
+def fetch_crypto_prices():
+    '''refreshes the global dictionary of crypto live prices'''
+    # GPT
+    global crypto_prices
+    url = "https://api.coingecko.com/api/v3/simple/price"
+    params = {
+        'ids': 'solana,ethereum,matic-network',  # Coin IDs for SOL, ETH, and MATIC
+        'vs_currencies': 'usd'             # Currency to fetch prices in
+    }
+    
+    response = requests.get(url, params=params)
+    
+    if response.status_code == 200:
+        prices = response.json()
+        sol_price = prices['solana']['usd']
+        eth_price = prices['ethereum']['usd']
+        matic_price = prices['matic-network']['usd']
+        
+        crypto_prices = {
+            'SOL': sol_price,
+            'ETH': eth_price,
+            'MATIC': matic_price
+        }
+        return
+    
+    else:
+        return {
+            'error': 'Failed to fetch prices',
+            'status_code': response.status_code
+        }
 
 
 def opensea_url_validator():
@@ -545,6 +535,7 @@ def opensea_url_validator():
                 "api_name_format": set_name,
                 "token": "ETH",
                 "token_floor_price": api_response['floor'],
+                "usd_floor_price": 0,
                 "total$": 0,
                 "vol_24": api_response['vol24'],
                 "watchlist_id": wallet_id
@@ -554,8 +545,8 @@ def opensea_url_validator():
             messagebox.showinfo('noerror', f'{set_name_entry.get()} added to Watchlist!')
             # TODO append and sort alphabetically the options list
             # TODO empty the entry boxes in watchlist frame
-            set_name_entry.delete(0, END)
-            url_entry.delete(0, END)
+            refresh_gui('watchlist')
+            
 
         else:
             messagebox.showwarning('error', 'API error, double check the URL!')
@@ -565,11 +556,10 @@ def opensea_url_validator():
 
 
 # program start
-dollar_to_huf()
-fetch_crypto_prices()
-# refresh_price() dont do it in the start, app opens only after prices fetched
-calculate_portfolio()
-# options_list = options()
+dollar_to_huf()  # catch live prices
+fetch_crypto_prices()  # catch live prices
+convert_floor() # updates floor price in $
+total_usd()  # updates the total portfolio worth
 #|||||||||||||||||||||||||||||||||||||    FRONTEND    ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 # create mvp frame and contents
@@ -626,10 +616,10 @@ portfolio_value.grid_columnconfigure((1,2), weight=1)
 portfolio_value_title = CTkLabel(portfolio_value, text='Portfolio Value:', font=title_font)
 portfolio_value_title.grid(row=0, column=0, padx=20, pady=20, sticky='wens')
 
-portfolio_value_title2 = CTkLabel(portfolio_value, text=calc_portfolio_worth_usd(), font=title_font, text_color=green_color)
+portfolio_value_title2 = CTkLabel(portfolio_value, text=format_currencies(portfolio_total(), 'USD'), font=title_font, text_color=green_color)
 portfolio_value_title2.grid(row=0, column=1, padx=0, pady=20, sticky='wns')
 
-portfolio_value_title3 = CTkLabel(portfolio_value, text=calc_portfolio_worth_huf(), font=title_font, text_color=green_color)
+portfolio_value_title3 = CTkLabel(portfolio_value, text=format_currencies(portfolio_total(), 'HUF'), font=title_font, text_color=green_color)
 portfolio_value_title3.grid(row=1, column=0, padx=0, pady=10, sticky='ens', columnspan=2)
 
 # create the nft grid frame and contents
@@ -678,13 +668,9 @@ confirm_button.grid(row=10, column=0, pady=2, padx=20, sticky='w')
 
 padding_label4 = CTkLabel(watchlist, text='')
 padding_label4.grid(row=11, column=0, columnspan=2, pady=0, padx=20)
-# create an NFT card with image
-# TODO complete the when_price_change() with changing all values in these cards
 
-# TODO add nft set append panel
 
 # TODO add opensea api key window if api not defined
-# create mainloop
 
-show_widgets()
+build_nftgrid()
 window.mainloop()
