@@ -1,5 +1,15 @@
 [
     {
+        "name": "Pudgy Penguins",
+        "quantity": 0.0,
+        "platform": "opensea",
+        "api_name_format": "pudgypenguins",
+        "token": "ETH",
+        "token_floor_price": "9.48",
+        "total$": 0,
+        "vol_24": "-0.67"
+    },
+    {
         "name": "Lil Pudgy",
         "quantity": 0.0,
         "platform": "opensea",
@@ -28,45 +38,5 @@
         "token_floor_price": "0.25",
         "total$": 0,
         "vol_24": "0.00"
-    },
-    {
-        "name": "Kitaro World",
-        "quantity": 0.0,
-        "platform": "coingecko",
-        "api_name_format": "kitaroworld",
-        "token": "ETH",
-        "token_floor_price": "0.04",
-        "total$": 0,
-        "vol_24": "101.65"
-    },
-    {
-        "name": "Plooshies",
-        "quantity": 0,
-        "platform": "opensea",
-        "api_name_format": "theplooshies",
-        "token": "ETH",
-        "token_floor_price": "0.24",
-        "total$": 0,
-        "vol_24": "-0.67"
-    },
-    {
-        "name": "Lil Buns",
-        "quantity": 0.0,
-        "platform": "opensea",
-        "api_name_format": "hefty-presents",
-        "token": "ETH",
-        "token_floor_price": "0.01",
-        "total$": 0,
-        "vol_24": "0.00"
-    },
-    {
-        "name": "Purrr Pals",
-        "quantity": 0.0,
-        "platform": "opensea",
-        "api_name_format": "purrrpals",
-        "token": "MATIC",
-        "token_floor_price": "9.77",
-        "total$": 0,
-        "vol_24": "-0.40"
     }
 ]

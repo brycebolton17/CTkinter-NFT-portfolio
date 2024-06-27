@@ -21,6 +21,7 @@ opensea_api = os.getenv('API_OPENSEA') # uncomment if api added manually 3 lines
 magiceden_bearer = os.getenv('MAGICEDEN_BEARER') # uncomment if api added manually 2 lines above
 
 # global vars
+widget_list = []
 data = 'data.json'
 app_data = 'app_data.json'
 
@@ -38,7 +39,8 @@ window.title('NFT Portfolio')
 window.geometry('1440x900')
 #TODO fix screen geometry to start in full screen on every computer
 window.minsize(width=300, height=690)
-window.grid_columnconfigure(2, weight=1)
+window.grid_columnconfigure(1, weight=1)
+window.grid_columnconfigure(4, weight=9)
 window.grid_rowconfigure((1,3,5), weight=1)
 window.grid_rowconfigure((2), weight=10)
 
@@ -156,7 +158,62 @@ def when_price_change():
     my_var1.set('Choose a set')
     collection_optionsmenu.configure(text_color='#565b5d')
 
-    # FUTURE ToDo: refresh all nft cards value too
+    # FUTURE #TODO: refresh all nft cards value too
+
+
+def edit_json(target):
+    '''input nftset name, removes that nft set from the app_data.json file and rearranges the higher index elements id in the json file'''
+    with open (app_data, 'r') as appdata:
+        app_data_list = json.load(appdata)
+    
+
+    # find id of target set
+    target_id = 0
+    for item in app_data_list:
+        if item['set'] == target:
+            target_id = item["id"]
+
+    # create new list with changing id and ignoring the target set
+    new_list_without_target = []
+    for item in app_data_list:
+        if not item['set'] == target: # add {} item to the new list if not the target set
+            if item["id"] > target_id: # change the id by substracting 1 if bigger than the removed id
+                item["id"] -= 1
+            new_list_without_target.append(item)
+    #
+    with open(app_data, 'w') as appdata:
+        json.dump(new_list_without_target, appdata, indent=4)
+
+def show_widgets(): # in the json file start "id" from 3 instead of 1
+    '''build the widgets from the json file'''
+    with open (app_data, 'r') as appdata:
+        app_data_list = json.load(appdata)
+
+    for item in app_data_list:
+        if item["id"] % 2 == 0:  # if id is even (paros), column=1
+            column = 1
+            row = int(item["id"] / 2)  # row = id/2
+
+        # this 2 elifs live because row 0 used by buttons, later might be useless            
+        elif item["id"] == 1: 
+            column = 0
+            row = 1
+
+        elif item["id"] == 3: 
+            column = 0
+            row = 2
+
+        else:
+            column = 0
+            row = int(item["id"] - 2)  # row = id-1
+
+        # create the widget and store it in a list
+        w_frame = CTkFrame(nft_grid, width=200, height=150, fg_color='yellow', corner_radius=15)
+        w_frame.grid_columnconfigure(0, weight=1)
+        new_label = CTkLabel(w_frame, text=item["set"], fg_color='yellow', width=220, height=120)
+        new_label.grid(row=0, column=0, padx=10, pady=10)
+        widget_list.append(w_frame)
+        w_frame.grid(column=column, row=row, pady=15, padx=30)
 
 #|||||||||||||||||||||||||||||||||||||    BACKEND FUNCTIONS    ||||||||||||||||||||||||||||||||||||||||||||||||||
 def readjson():
@@ -312,20 +369,24 @@ def get_opensea_price(required_format_name):
     }
 
     response = requests.get(opensea_url, headers=opensea_headers)
-    data = response.json()
 
-    floor_price = data["total"]["floor_price"]
-    volume_change = data['intervals'][0]['volume_change']
+    if str(response) == '<Response [200]>':
+        data = response.json()
 
-    formatted_volume_change = format(volume_change, ".2f")
-    formatted_floor = format(floor_price, ".2f")
+        floor_price = data["total"]["floor_price"]
+        volume_change = data['intervals'][0]['volume_change']
 
-    my_dict = {
-        'floor': formatted_floor,
-        'vol24': formatted_volume_change
-    }
+        formatted_volume_change = format(volume_change, ".2f")
+        formatted_floor = format(floor_price, ".2f")
 
-    return my_dict
+        my_dict = {
+            'floor': formatted_floor,
+            'vol24': formatted_volume_change
+        }
+        return my_dict
+
+    else:
+        return 'api error'
 
 
 def get_magiceden_price(required_format_name):
@@ -372,6 +433,34 @@ def is_float(str):
             return False
 
 
+def opensea_url_validator():
+    '''validates the opensea url and add set to wallet for tracking, writes the data.json file'''
+    opensea_prefix = 'https://opensea.io/collection/'
+    test_this_url = url_entry.get()
+    if test_this_url.startswith(opensea_prefix):
+        set_name = test_this_url.removeprefix(opensea_prefix)
+        api_response = get_opensea_price(set_name)
+        if not api_response == 'api error':
+            wallet_list = readjson()
+            #
+            wallet_list.append({
+                "name": set_name_entry.get(),
+                "quantity": 0.0,
+                "platform": "opensea",
+                "api_name_format": set_name,
+                "token": "ETH",
+                "token_floor_price": api_response['floor'],
+                "total$": 0,
+                "vol_24": api_response['vol24']
+            })
+            #
+            writejson(wallet_list)
+            # TODO append and sort alphabetically the options list
+
+    else:
+        messagebox.showwarning('error', 'Not an opensea URL!')
+
+
 # program start
 dollar_to_huf()
 fetch_crypto_prices()
@@ -415,8 +504,8 @@ collection_optionsmenu.grid(row=1, column=0, pady=0, sticky='w', padx=20, column
 quantity_entry = CTkEntry(sidebar, placeholder_text='Quantity (for example: 1 or 0.5)', fg_color='white', text_color='black', width=220, border_width=2)
 quantity_entry.grid(row=2, column=0, pady=10, sticky='w', padx=20, columnspan=2)
 
-submit_button = CTkButton(sidebar, text='ADD', width=100, fg_color=green_color, hover_color='#0b6e4f', command=lambda: button_pressed('add'))
-submit_button.grid(row=3, column=0, pady=0, sticky='w', padx=20, columnspan=1)
+add_button = CTkButton(sidebar, text='ADD', width=100, fg_color=green_color, hover_color='#0b6e4f', command=lambda: button_pressed('add'))
+add_button.grid(row=3, column=0, pady=0, sticky='w', padx=20, columnspan=1)
 
 remove_button = CTkButton(sidebar, text='REMOVE', width=100, fg_color=red_color, hover_color=dark_red_color, command=lambda: button_pressed('remove'))
 remove_button.grid(row=3, column=1, pady=0, sticky='w', padx=0, columnspan=1)
@@ -442,47 +531,33 @@ portfolio_value_title3 = CTkLabel(portfolio_value, text=calc_portfolio_worth_huf
 portfolio_value_title3.grid(row=1, column=0, padx=0, pady=10, sticky='ens', columnspan=2)
 
 # create the nft grid frame and contents
-nft_grid = CTkFrame(window, corner_radius=20, fg_color=lightblue_color)
-nft_grid.grid(rowspan=6, row=0, column=1, sticky='wens', pady=20, padx=20, ipadx=200)
+nft_grid = CTkScrollableFrame(window, corner_radius=20, fg_color=lightblue_color)
+nft_grid.grid(rowspan=6, row=0, column=2, sticky='wens', pady=20, padx=0, ipadx=200)
 
-#TODO add nft set append panel
+# create opensea validator frame and contents
+opensea_sidebar = CTkFrame(window, fg_color='red', corner_radius=20)
+opensea_sidebar.grid(row=0, column=3, padx=20, pady=20, sticky='wens')
 
-# TODO add opensea api key window if api not defined
+opensea_title = CTkLabel(opensea_sidebar, text='Watch Opensea NFT set', font=title_font)
+opensea_title.grid(row=0, column=0, columnspan=2, pady=20, padx=20)
+
+set_name_entry = CTkEntry(opensea_sidebar, placeholder_text='Enter a set name', fg_color='white', text_color='black', border_width=2)
+set_name_entry.grid(row=1, column=0, columnspan=2, pady=0, padx=20, sticky='w')
+
+url_entry = CTkEntry(opensea_sidebar, placeholder_text='paste opensea.io url', fg_color='white', text_color='black', border_width=2)
+url_entry.grid(row=2, column=0, columnspan=2, pady=2, padx=20, sticky='w')
 
 
-
-
-
-
-
-
-
-
-
+submit_button = CTkButton(opensea_sidebar, text='SUBMIT', command=opensea_url_validator)
+submit_button.grid(row=3, column=0, pady=2, padx=20, sticky='w')
 
 # create an NFT card with image
-#TODO complete the when_price_change() with changing all values in these cards
+# TODO complete the when_price_change() with changing all values in these cards
 
-    # opening and compressing images
-nft_widget_width = 200
-nft_widget_height = 110
+# TODO add nft set append panel
 
-card = CTkFrame(nft_grid, corner_radius=20, fg_color='#808080')
-card.pack(padx=10, pady=20)
-
-pil = compress_image('Lil Pudgy')
-my_image = CTkImage(light_image=pil, dark_image=pil, size=(nft_widget_width,nft_widget_height))
-
-card_image = CTkLabel(card, text='', image=my_image)
-card_image.grid(row=0, column=0, columnspan=2, pady=20, padx=8)
-
-title = CTkLabel(card, text='Lil Pudgy', font=title_font2, fg_color='red', corner_radius=0)
-title.grid(row=1, column=0, sticky='w', padx=8, pady=2)
-
-title2 = CTkLabel(card, text='')
-title2.grid(row=2, column=0, pady=15)
-
-
-
+# TODO add opensea api key window if api not defined
 # create mainloop
+
+show_widgets()
 window.mainloop()
