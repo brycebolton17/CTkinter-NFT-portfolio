@@ -231,13 +231,13 @@ def build_nftgrid():
             column = 0
             row = 1
 
-        elif item["watchlist_id"] == 3: 
-            column = 0
-            row = 2
+        elif item["watchlist_id"] == 2: 
+            column = 1
+            row = 1
 
         else:
             column = 0
-            row = int(item["watchlist_id"] - 2)  # row = id-2
+            row = int(item["watchlist_id"] - 1)  # row = id-1
   
         # create the widget and store it in a list
         # TODO design it
@@ -672,6 +672,6 @@ padding_label4.grid(row=11, column=0, columnspan=2, pady=0, padx=20)
 
 
 # TODO add opensea api key window if api not defined
-
+# TODO disable removing the last item from watchlist or fix id start from 3 instead of 1
 build_nftgrid()
 window.mainloop()
