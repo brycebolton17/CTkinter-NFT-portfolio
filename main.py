@@ -32,28 +32,14 @@ crypto_prices = {
         }
 dollar_huf = 0
 
-# create window
-window = CTk()
-window.title('NFT Portfolio')
-# window.geometry('1920x1080')
-window.geometry('1440x900')
-window.state('zoomed')
-window.minsize(width=1400, height=690)
-window.grid_columnconfigure((1,3), weight=1)
-window.grid_columnconfigure(5, weight=9)
-window.grid_rowconfigure((1,3,5), weight=1)
-window.grid_rowconfigure((2), weight=10)
-
 # create styling
-set_appearance_mode('dark')
-# set_default_color_theme('dark-blue')
-
 # fonts
 title_font = ('Helvetica', 24, 'bold')
 title_font2 = ('Helvetica', 18, 'bold')
 vol24_font = ('Helvetica', 34, 'bold')
 
 # colors
+window_color = ('#C5C6C7', '#1F2833')
 title_font_color = 'white' # color of all titles except portfolio value frame's green texts
 default_text_color = 'black' # mvp message, watchlist message, (BUY, SELL, REFRESH, EXPORT, SUBMIT, CONFIRM)-button text, (quantity, set, url)-entry, op menu 1,2 on refresh function
 vol24_percent = '#39e75f' # bright green
@@ -75,7 +61,21 @@ yellow_color = 'yellow' # card frames background color
 # TODO define all text color here too
 # TODO re create every variable with a tuple () for darkmode
 
+# create window
+window = CTk(fg_color=window_color)
+window.title('NFT Portfolio')
+# window.geometry('1920x1080')
+window.geometry('1440x900')
+window.state('zoomed')
+window.minsize(width=1400, height=690)
+window.grid_columnconfigure((1,3), weight=1)
+window.grid_columnconfigure(5, weight=9)
+window.grid_rowconfigure((1,3,5), weight=1)
+window.grid_rowconfigure((2), weight=10)
 
+
+set_default_color_theme("apperance.json")
+set_appearance_mode('light')
 
 
 
