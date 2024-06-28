@@ -221,23 +221,26 @@ def remove_watchlist():
 def build_nftgrid():
     '''build the widgets from the json file'''
     app_data_list = readjson()
-
+    start_row = 1
     for item in app_data_list:
         if item["watchlist_id"] % 2 == 0:  # if id is even (paros), column=1
             column = 1
-            row = int(item["watchlist_id"] / 2)  # row = id/2
-         
-        elif item["watchlist_id"] == 1: 
-            column = 0
-            row = 1
+            # row = int(item["watchlist_id"] / 2)  # row = id/2
+            row = start_row
+            start_row += 1
 
-        elif item["watchlist_id"] == 2: 
-            column = 1
-            row = 1
+        # elif item["watchlist_id"] == 1: 
+        #     column = 0
+        #     row = 1
+
+        # elif item["watchlist_id"] == 2: 
+        #     column = 1
+        #     row = 1
 
         else:
             column = 0
-            row = int(item["watchlist_id"] - 1)  # row = id-1
+            # row = int(item["watchlist_id"] - 2)  # row = id-1
+            row = start_row
   
         # create the widget and store it in a list
         # TODO design it
