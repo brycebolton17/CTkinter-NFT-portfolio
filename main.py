@@ -38,7 +38,7 @@ window.title('NFT Portfolio')
 # window.geometry('1920x1080')
 window.geometry('1440x900')
 window.state('zoomed')
-window.minsize(width=300, height=690)
+window.minsize(width=1400, height=690)
 window.grid_columnconfigure((1,3), weight=1)
 window.grid_columnconfigure(5, weight=9)
 window.grid_rowconfigure((1,3,5), weight=1)
@@ -46,21 +46,29 @@ window.grid_rowconfigure((2), weight=10)
 
 # create styling
 set_appearance_mode('dark')
-set_default_color_theme('dark-blue')
+# set_default_color_theme('dark-blue')
+
+# fonts
 title_font = ('Helvetica', 24, 'bold')
 title_font2 = ('Helvetica', 18, 'bold')
-menu_row_font = ('Helvetica', 20, 'bold')
 vol24_font = ('Helvetica', 34, 'bold')
 
-bright_green_color = '#39e75f'
-green_color = '#08a045'
-red_color = '#ff2c2c'
-dark_red_color = '#d1001f'
-orange_color = 'orange'
-darkblue_color = '#02367b'
-lightblue_color = '#5ac4f6'
+# colors
+title_font_color = 'white' # color of all titles except portfolio value frame's green texts
+default_text_color = 'black' # mvp message
+vol24_percent = '#39e75f' # bright green
+green_color = '#08a045' # portfolio value text, buy button
+dark_green_color = '#0b6e4f' # buy button hover
+red_color = '#ff2c2c' # remove button, watchlist frame background color
+dark_red_color = '#d1001f'  # remove button hover
 
-
+orange_color = 'orange' # mvp frame background color
+darkblue_color = '#02367b' # sidebar frame background color, SUBMIT and CONFIRM button
+dark_dark_blue_color = '#1d2951' # portfolio value frame background color
+lightblue_color = '#5ac4f6' # nft grid frame background color
+yellow_color = 'yellow' # card frames background color
+# TODO define all text color here too
+# TODO re create every variable with a tuple () for darkmode
 
 
 
@@ -244,11 +252,11 @@ def build_nftgrid():
   
         # create the widget and store it in a list
         # TODO design it
-        w_frame = CTkFrame(nft_grid, width=200, height=150, fg_color='yellow', corner_radius=15)
+        w_frame = CTkFrame(nft_grid, width=200, height=150, fg_color=yellow_color, corner_radius=15)
         w_frame.grid_columnconfigure((0,1), weight=1)
         
         # title
-        set_title = CTkLabel(w_frame, text=item["name"], fg_color='red', font=title_font2, width=220, height=60, anchor='w') # , , 
+        set_title = CTkLabel(w_frame, text=item["name"], font=title_font2, width=220, height=60, anchor='w') # , , 
         set_title.grid(row=0, column=0, padx=10, pady=10, sticky='wens', columnspan=2)
         
         # attribute labels
@@ -567,17 +575,17 @@ total_usd()  # updates the total portfolio worth
 mvp = CTkFrame(window, fg_color=orange_color, corner_radius=20)
 mvp.grid(row=0, column=0, pady=20, sticky='nsew', padx=20, ipady=8)
 
-mvp_title = CTkLabel(mvp, text=f'MVP set: {find_mvp()['name']}', font=title_font, width=350, anchor='w', padx=20)
+mvp_title = CTkLabel(mvp, text=f'MVP set: {find_mvp()['name']}', font=title_font, width=350, anchor='w', padx=20, text_color=title_font_color)
 mvp_title.pack(pady=20)
 
 tropy_icon = ctk_image_open('trophy')
 tropy_icon_label = CTkLabel(mvp, text='', image=tropy_icon)
 tropy_icon_label.pack()
 
-vol_24h_percent = CTkLabel(mvp, text=f'{find_mvp()['vol_change']}%', text_color=bright_green_color, font=vol24_font, width=350, anchor='e', padx=10)
+vol_24h_percent = CTkLabel(mvp, text=f'{find_mvp()['vol_change']}%', text_color=vol24_percent, font=vol24_font, width=350, anchor='e', padx=10)
 vol_24h_percent.pack()
 
-mvp_help_info = CTkLabel(mvp, text='(volume in last 24h)', text_color='black', width=350, anchor='e', padx=10)
+mvp_help_info = CTkLabel(mvp, text='(volume in last 24h)', text_color=default_text_color, width=350, anchor='e', padx=10)
 mvp_help_info.pack()
 
 # create sidebar frame and contents
@@ -585,7 +593,7 @@ sidebar = CTkFrame(window, fg_color=darkblue_color, corner_radius=20)
 sidebar.grid(row=2, column=0, padx=20, sticky='nsew', ipady=15)
 sidebar.grid_columnconfigure((0,1), uniform='a')
 
-sidebar_title = CTkLabel(sidebar, text='Edit Wallet', font=title_font, anchor='w', padx=20)
+sidebar_title = CTkLabel(sidebar, text='Edit Wallet', font=title_font, anchor='w', padx=20, text_color=title_font_color)
 sidebar_title.grid(row=0, column=0, columnspan=2, pady=20, sticky='wens')
 
     # create the options menu
@@ -597,7 +605,7 @@ collection_optionsmenu.grid(row=1, column=0, pady=0, sticky='w', padx=20, column
 quantity_entry = CTkEntry(sidebar, placeholder_text='Quantity (for example: 1 or 0.5)', fg_color='white', text_color='black', width=220, border_width=2)
 quantity_entry.grid(row=2, column=0, pady=10, sticky='w', padx=20, columnspan=2)
 
-add_button = CTkButton(sidebar, text='BUY', width=100, fg_color=green_color, hover_color='#0b6e4f', command=lambda: button_pressed('add'))
+add_button = CTkButton(sidebar, text='BUY', width=100, fg_color=green_color, hover_color=dark_green_color, command=lambda: button_pressed('add'))
 add_button.grid(row=3, column=0, pady=0, sticky='w', padx=20, columnspan=1)
 
 remove_button = CTkButton(sidebar, text='SELL', width=100, fg_color=red_color, hover_color=dark_red_color, command=lambda: button_pressed('remove'))
@@ -610,11 +618,11 @@ export_button = CTkButton(sidebar, text='EXPORT CSV', width=100, fg_color='grey'
 export_button.grid(row=5, column=0, pady=0, sticky='w', padx=20, columnspan=1)
 
 # create portfolio_value frame and contents
-portfolio_value = CTkFrame(window, fg_color='#1d2951', corner_radius=20)
+portfolio_value = CTkFrame(window, fg_color=dark_dark_blue_color, corner_radius=20)
 portfolio_value.grid(row=4, column=0, padx=20, ipady=0, pady=20, sticky='nsew')
 portfolio_value.grid_columnconfigure((1,2), weight=1)
 
-portfolio_value_title = CTkLabel(portfolio_value, text='Portfolio Value:', font=title_font)
+portfolio_value_title = CTkLabel(portfolio_value, text='Portfolio Value:', font=title_font, text_color=title_font_color)
 portfolio_value_title.grid(row=0, column=0, padx=20, pady=20, sticky='wens')
 
 portfolio_value_title2 = CTkLabel(portfolio_value, text=format_currencies(portfolio_total(), 'USD'), font=title_font, text_color=green_color)
@@ -627,17 +635,17 @@ portfolio_value_title3.grid(row=1, column=0, padx=0, pady=10, sticky='ens', colu
 nft_grid = CTkScrollableFrame(window, corner_radius=20, fg_color=lightblue_color)
 nft_grid.grid(rowspan=6, row=0, column=2, sticky='wens', pady=20, padx=0, ipadx=200)
 
-nft_grid_maintitle = CTkLabel(nft_grid, text='Watchlist items', font=title_font)
+nft_grid_maintitle = CTkLabel(nft_grid, text='Watchlist items', font=title_font, text_color=title_font_color)
 nft_grid_maintitle.grid(row=0, column=0, columnspan=2, pady=10)
 
 # create watchlist editor frame and contents
-watchlist = CTkFrame(window, fg_color='red', corner_radius=20)
+watchlist = CTkFrame(window, fg_color=red_color, corner_radius=20)
 watchlist.grid(row=0, column=4, padx=20, pady=20, sticky='wen', rowspan=3)
 
 padding_label1 = CTkLabel(watchlist, text='')
 padding_label1.grid(row=0, column=0, columnspan=2, pady=0, padx=20)
 
-watchlist_title = CTkLabel(watchlist, text='Add to Watchlist', font=title_font)
+watchlist_title = CTkLabel(watchlist, text='Add to Watchlist', font=title_font, text_color=title_font_color)
 watchlist_title.grid(row=1, column=0, columnspan=2, pady=0, padx=20, sticky='w')
 
 watching_list_message = CTkLabel(watchlist, text='(Watchlist items can be added to wallet later)', text_color='black')
@@ -652,13 +660,13 @@ set_name_entry.grid(row=4, column=0, columnspan=2, pady=0, padx=20, sticky='w')
 url_entry = CTkEntry(watchlist, placeholder_text='paste opensea.io url', fg_color='white', text_color='black', border_width=2)
 url_entry.grid(row=5, column=0, columnspan=2, pady=2, padx=20, sticky='w')
 
-submit_button = CTkButton(watchlist, text='SUBMIT', command=opensea_url_validator)
+submit_button = CTkButton(watchlist, text='SUBMIT', command=opensea_url_validator, fg_color=darkblue_color)
 submit_button.grid(row=6, column=0, pady=2, padx=20, sticky='w')
 #
 padding_label3 = CTkLabel(watchlist, text='')
 padding_label3.grid(row=7, column=0, columnspan=2, pady=20, padx=20)
 
-remove_watchlist_title = CTkLabel(watchlist, text='Remove from Watchlist', font=title_font)
+remove_watchlist_title = CTkLabel(watchlist, text='Remove from Watchlist', font=title_font, text_color=title_font_color)
 remove_watchlist_title.grid(row=8, column=0, columnspan=2, pady=10, padx=20, sticky='w')
 
     # create the options menu
@@ -667,14 +675,21 @@ my_var2.set('Choose a set')
 collection_optionsmenu2 = CTkOptionMenu(watchlist, button_color='grey', button_hover_color='white', fg_color='white', values=options(), variable=my_var2, command=opmenu_text, text_color='#565b5d')
 collection_optionsmenu2.grid(row=9, column=0, pady=0, sticky='w', padx=20)
 
-confirm_button = CTkButton(watchlist, text='CONFIRM', command=remove_watchlist)
+confirm_button = CTkButton(watchlist, text='CONFIRM', command=remove_watchlist, fg_color=darkblue_color)
 confirm_button.grid(row=10, column=0, pady=2, padx=20, sticky='w')
 
 padding_label4 = CTkLabel(watchlist, text='')
 padding_label4.grid(row=11, column=0, columnspan=2, pady=0, padx=20)
 
 
-# TODO add opensea api key window if api not defined
-# TODO disable removing the last item from watchlist or fix id start from 3 instead of 1
+
 build_nftgrid()
 window.mainloop()
+
+# TODO fix nft grid system
+# TODO  design nft cards
+# TODO re color (with dark mode)
+# TODO api key window
+# TODO center the contents in the main window
+# TODO disable removing the last item from watchlist
+# TODO secret magiceden api full feature
