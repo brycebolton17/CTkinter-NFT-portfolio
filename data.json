@@ -6,7 +6,7 @@
         "api_name_format": "pudgypenguins",
         "token": "ETH",
         "token_floor_price": 10.85,
-        "usd_floor_price": 36759,
+        "usd_floor_price": 36682,
         "total$": 0,
         "vol_24": 4.53,
         "watchlist_id": 3
@@ -18,7 +18,7 @@
         "api_name_format": "lilpudgys",
         "token": "ETH",
         "token_floor_price": 0.97,
-        "usd_floor_price": 3286,
+        "usd_floor_price": 3279,
         "total$": 0,
         "vol_24": 7.67,
         "watchlist_id": 4
@@ -30,7 +30,7 @@
         "api_name_format": "pudgyrods",
         "token": "ETH",
         "token_floor_price": 0.23,
-        "usd_floor_price": 779,
+        "usd_floor_price": 777,
         "total$": 0,
         "vol_24": 72.46,
         "watchlist_id": 5
@@ -45,7 +45,7 @@
         "total$": 0,
         "vol_24": 0.0,
         "watchlist_id": 6,
-        "usd_floor_price": 846
+        "usd_floor_price": 845
     },
     {
         "name": "pl",
@@ -54,7 +54,7 @@
         "api_name_format": "theplooshies",
         "token": "ETH",
         "token_floor_price": 0.2,
-        "usd_floor_price": 677,
+        "usd_floor_price": 676,
         "total$": 0,
         "vol_24": -0.78,
         "watchlist_id": 7
@@ -66,7 +66,7 @@
         "api_name_format": "boredapeyachtclub",
         "token": "ETH",
         "token_floor_price": 10.82,
-        "usd_floor_price": 36657,
+        "usd_floor_price": 36580,
         "total$": 0,
         "vol_24": 0.64,
         "watchlist_id": 8
