@@ -28,7 +28,7 @@ main_title_font = ('Helvetica', 40, 'bold')
 title_font = ('Helvetica', 24, 'bold')
 title_font2 = ('Helvetica', 18, 'bold')
 vol24_font = ('Helvetica', 34, 'bold')
-default_font_bold = ('Helvetica', 13, 'bold')
+default_font = ('Helvetica', 13)
 
     # colors
 window_color = ('#C5C6C7', '#1F2833')
@@ -268,16 +268,16 @@ def build_nftgrid():
         else:
             q = item["quantity"]
 
-        set_quantity_label = CTkLabel(w_frame, text=f'Quantity: {q}', anchor='w', font=default_font_bold, text_color=default_text_color) # , , 
+        set_quantity_label = CTkLabel(w_frame, text=f'Quantity: {q}', anchor='w', font=default_font, text_color=default_text_color) # , , 
         set_quantity_label.grid(row=1, column=0, padx=10, pady=0, sticky='wens')
 
-        set_floor_label = CTkLabel(w_frame, text=f'Floor price: {item["token_floor_price"]} {item['token']} / {format_currencies(item['usd_floor_price'], 'USD')}', anchor='w', font=default_font_bold, text_color=default_text_color) # , , 
+        set_floor_label = CTkLabel(w_frame, text=f'Floor price: {item["token_floor_price"]} {item['token']} / {format_currencies(item['usd_floor_price'], 'USD')}', anchor='w', font=default_font, text_color=default_text_color) # , , 
         set_floor_label.grid(row=2, column=0, padx=10, pady=0, sticky='wens')
 
-        set_total_label = CTkLabel(w_frame, text=f'Holdings: {format_currencies(item['total$'], 'USD')} / {format_currencies(item['total$'], 'HUF')}', anchor='w', font=default_font_bold, text_color=default_text_color) # , , 
+        set_total_label = CTkLabel(w_frame, text=f'Holdings: {format_currencies(item['total$'], 'USD')} / {format_currencies(item['total$'], 'HUF')}', anchor='w', font=default_font, text_color=default_text_color) # , , 
         set_total_label.grid(row=3, column=0, padx=10, pady=0, sticky='wens')
 
-        set_vol24_label = CTkLabel(w_frame, text=f'Volume change (24h): {item['vol_24']}%', anchor='w', font=default_font_bold, text_color=default_text_color)
+        set_vol24_label = CTkLabel(w_frame, text=f'Volume change (24h): {item['vol_24']}%', anchor='w', font=default_font, text_color=default_text_color)
         set_vol24_label.grid(row=4, column=0, padx=10, pady=0, sticky='wens')
 
         empty_label = CTkLabel(w_frame, text='')
