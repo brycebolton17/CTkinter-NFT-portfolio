@@ -11,16 +11,13 @@ import time
 import os
 
 
-
-# API 
-opensea_api = "" # enter your opensea API key here
-
 # Load environment variables from .env file (APIs in this case)
-load_dotenv()
-opensea_api = os.getenv('API_OPENSEA') # uncomment if api added manually 3 lines above
-magiceden_bearer = os.getenv('MAGICEDEN_BEARER') # uncomment if api added manually 2 lines above
+# load_dotenv()
+# opensea_api = os.getenv('API_OPENSEA') # uncomment if api added manually 3 lines above
+# magiceden_bearer = os.getenv('MAGICEDEN_BEARER') # uncomment if api added manually 2 lines above
 
 # global vars
+# opensea_api = ''
 widget_list = []
 data = 'data.json'
 app_data = 'app_data.json'
@@ -32,6 +29,7 @@ crypto_prices = {
         }
 dollar_huf = 0
 
+#
 # create styling
 # fonts
 main_title_font = ('Helvetica', 40, 'bold')
@@ -62,11 +60,15 @@ blue_green_color = '#45A29E' # nft grid frame background color
 
 # create window
 window = CTk(fg_color=window_color)
+window.withdraw()  # auto switch to this window
+# window.withdraw()  # call again to hide main window
+
 window.title('NFT Portfolio')
 # window.geometry('1920x1080')
 window.geometry('1440x900')
 window.state('zoomed')
 window.minsize(width=1400, height=690)
+
 window.grid_columnconfigure((2,4), weight=1)
 window.grid_columnconfigure((0,6), weight=9)
 window.grid_rowconfigure((1,3,5), weight=1)
@@ -75,7 +77,6 @@ window.grid_rowconfigure((2), weight=10)
 
 set_default_color_theme("apperance.json")
 set_appearance_mode('dark')
-
 
 
 
@@ -466,17 +467,20 @@ def dollar_to_huf():
 
 def get_opensea_price(required_format_name):
     """enter nft collection name, returns dictionary floor price formatted to str, vol24 str"""
+    print(opensea_api)
+
     opensea_url = f"https://api.opensea.io/api/v2/collections/{required_format_name}/stats"
     opensea_headers = {
         "accept": "application/json",
         "x-api-key": opensea_api
     }
-
+    print(opensea_url)
+    print(opensea_headers)
     response = requests.get(opensea_url, headers=opensea_headers)
+    print(response)
 
     if str(response) == '<Response [200]>':
         data = response.json()
-
         floor_price = data["total"]["floor_price"]
         volume_change = data['intervals'][0]['volume_change']
 
@@ -582,11 +586,65 @@ def opensea_url_validator():
         messagebox.showwarning('error', 'Not an opensea URL!')
 
 
+def validate_api_window():
+    if opensea_api == "":
+        window.withdraw()  # call again to hide main window
+        popup_api_window = CTkToplevel()
+        popup_api_window.geometry('400x100')
+        popup_api_window.title('API KEY VALIDATOR')
+        popup_api_window.columnconfigure(0, weight=1)
+        popup_api_window.rowconfigure(0, weight=1)
+
+        popup_frame = CTkFrame(popup_api_window)
+        popup_frame.grid(row=0, column=0, sticky='wens')
+
+        api_title = CTkLabel(popup_frame, text='Enter your Opensea API key below:', font=title_font2)
+        api_title.pack()
+
+        api_entry = CTkEntry(popup_frame, placeholder_text='api key...')
+        api_entry.pack(pady=5)
+
+        api_button = CTkButton(popup_frame, text='ENTER', command=lambda: validate_api(api_entry.get(), popup_api_window))
+        api_button.pack()
+
+
+def validate_api(api_entry_arg, popup_api_window):
+    print(api_entry_arg)
+    global opensea_api
+    opensea_api = api_entry_arg
+    api_response = get_opensea_price('boredapeyachtclub')
+    if api_response == 'api error':
+        opensea_api = ""
+        messagebox.showwarning('error', f'Key is invalid, try again!')
+    else:
+        popup_api_window.destroy()
+        window.deiconify()
+
+        with open(app_data, 'r') as appdata:
+            appdata_dict = json.load(appdata)
+
+        appdata_dict['opensea_api'] = opensea_api
+
+        with open(app_data, 'w') as appdata:
+            json.dump(appdata_dict, appdata, indent=4)
+
+
+def read_api():
+    '''reads the api from the json file, update the global opensea api variable'''
+    global opensea_api
+    with open(app_data, 'r') as appdata:
+        appdata_dict = json.load(appdata)
+
+    opensea_api = appdata_dict["opensea_api"]
+
+
 # program start
 dollar_to_huf()  # catch live prices
 fetch_crypto_prices()  # catch live prices
 convert_floor() # updates floor price in $
 total_usd()  # updates the total portfolio worth
+read_api()
+validate_api_window()
 #|||||||||||||||||||||||||||||||||||||    FRONTEND    ||||||||||||||||||||||||||||||||||||||||||||||||||
 
 # create mvp frame and contents

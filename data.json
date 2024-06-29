@@ -5,10 +5,10 @@
         "platform": "opensea",
         "api_name_format": "pudgypenguins",
         "token": "ETH",
-        "token_floor_price": 9.46,
-        "usd_floor_price": 32096,
+        "token_floor_price": 10.85,
+        "usd_floor_price": 36759,
         "total$": 0,
-        "vol_24": -0.14,
+        "vol_24": 4.53,
         "watchlist_id": 3
     },
     {
@@ -17,10 +17,10 @@
         "platform": "opensea",
         "api_name_format": "lilpudgys",
         "token": "ETH",
-        "token_floor_price": 0.78,
-        "usd_floor_price": 2646,
+        "token_floor_price": 0.97,
+        "usd_floor_price": 3286,
         "total$": 0,
-        "vol_24": -0.49,
+        "vol_24": 7.67,
         "watchlist_id": 4
     },
     {
@@ -29,10 +29,10 @@
         "platform": "opensea",
         "api_name_format": "pudgyrods",
         "token": "ETH",
-        "token_floor_price": 0.18,
-        "usd_floor_price": 610,
+        "token_floor_price": 0.23,
+        "usd_floor_price": 779,
         "total$": 0,
-        "vol_24": 1.05,
+        "vol_24": 72.46,
         "watchlist_id": 5
     },
     {
@@ -45,6 +45,30 @@
         "total$": 0,
         "vol_24": 0.0,
         "watchlist_id": 6,
-        "usd_floor_price": 848
+        "usd_floor_price": 846
+    },
+    {
+        "name": "pl",
+        "quantity": 0.0,
+        "platform": "opensea",
+        "api_name_format": "theplooshies",
+        "token": "ETH",
+        "token_floor_price": 0.2,
+        "usd_floor_price": 677,
+        "total$": 0,
+        "vol_24": -0.78,
+        "watchlist_id": 7
+    },
+    {
+        "name": "BAYC",
+        "quantity": 0.0,
+        "platform": "opensea",
+        "api_name_format": "boredapeyachtclub",
+        "token": "ETH",
+        "token_floor_price": 10.82,
+        "usd_floor_price": 36657,
+        "total$": 0,
+        "vol_24": 0.64,
+        "watchlist_id": 8
     }
 ]
