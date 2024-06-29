@@ -47,8 +47,6 @@ opmenu_button_hover_color = 'white'
 orange_color = 'orange' # mvp frame background color
 blue_green_color = '#45A29E' # nft grid frame background color
 
-# TODO define all text color here too
-# TODO re create every variable with a tuple () for darkmode
 
 # create window
 window = CTk(fg_color=window_color)
@@ -198,6 +196,10 @@ def refresh_gui(source):
 def remove_watchlist():
     '''input nftset name, removes that nft set from the app_data.json file and rearranges the higher index elements id in the json file'''
     app_data_list = readjson()
+    if len(app_data_list) == 1:
+        messagebox.showwarning('error', "You can't delete the last item!")
+        return
+
     target = my_var2.get()
     if target == 'Choose a set':
         messagebox.showwarning('error', 'Choose a set first!')
@@ -561,7 +563,6 @@ def opensea_url_validator():
             writejson(wallet_list)
             messagebox.showinfo('noerror', f'{set_name_entry.get()} added to Watchlist!')
             # TODO append and sort alphabetically the options list
-            # TODO empty the entry boxes in watchlist frame
             refresh_gui('watchlist')
             
 
@@ -753,8 +754,7 @@ window.mainloop()
 
 # TODO design nft cards
 # TODO dark mode light theme
-# TODO api key window
-# TODO disable removing the last item from watchlist
 # TODO mvp frame set name text color to white
 # TODO secret magiceden api full feature
 # TODO text like g, fix
+# TODO add opensea api window message
