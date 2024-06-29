@@ -612,7 +612,7 @@ sidebar.grid(row=2, column=1, padx=20, sticky='nsew', ipady=15)
 sidebar.grid_columnconfigure((0,1), uniform='a')
 
 sidebar_title = CTkLabel(sidebar, text='Edit Wallet', font=title_font, anchor='w', padx=20)
-sidebar_title.grid(row=0, column=1, columnspan=2, pady=20, sticky='wens')
+sidebar_title.grid(row=0, column=0, columnspan=2, pady=20, sticky='wens')
 
     # create the options menu
 my_var1 = StringVar()
@@ -709,7 +709,6 @@ window.mainloop()
 # TODO design nft cards
 # TODO dark mode light theme
 # TODO api key window
-# TODO center the contents in the main window
 # TODO disable removing the last item from watchlist
 # TODO mvp frame set name text color to white
 # TODO secret magiceden api full feature
