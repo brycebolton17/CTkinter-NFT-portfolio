@@ -67,8 +67,8 @@ window.title('NFT Portfolio')
 window.geometry('1440x900')
 window.state('zoomed')
 window.minsize(width=1400, height=690)
-window.grid_columnconfigure((1,3), weight=1)
-window.grid_columnconfigure(5, weight=9)
+window.grid_columnconfigure((2,4), weight=1)
+window.grid_columnconfigure((0,6), weight=9)
 window.grid_rowconfigure((1,3,5), weight=1)
 window.grid_rowconfigure((2), weight=10)
 
@@ -264,7 +264,7 @@ def build_nftgrid():
         w_frame.grid_columnconfigure((0,1), weight=1)
         
         # title
-        set_title = CTkLabel(w_frame, text=item["name"], font=title_font2, width=220, height=60, anchor='w', text_color='white') # , , 
+        set_title = CTkLabel(w_frame, text=item["name"], font=title_font2, width=220, height=60, anchor='w', text_color='white')
         set_title.grid(row=0, column=0, padx=10, pady=10, sticky='wens', columnspan=2)
         
         # attribute labels
@@ -591,7 +591,7 @@ total_usd()  # updates the total portfolio worth
 
 # create mvp frame and contents
 mvp = CTkFrame(window, corner_radius=20)
-mvp.grid(row=0, column=0, pady=20, sticky='nsew', padx=20, ipady=8)
+mvp.grid(row=0, column=1, pady=20, sticky='nsew', padx=20, ipady=8)
 
 mvp_title = CTkLabel(mvp, text=f'MVP set: {find_mvp()['name']}', font=title_font, width=350, anchor='w', padx=20)
 mvp_title.pack(pady=20)
@@ -608,11 +608,11 @@ mvp_help_info.pack()
 
 # create sidebar frame and contents
 sidebar = CTkFrame(window, corner_radius=20)
-sidebar.grid(row=2, column=0, padx=20, sticky='nsew', ipady=15)
+sidebar.grid(row=2, column=1, padx=20, sticky='nsew', ipady=15)
 sidebar.grid_columnconfigure((0,1), uniform='a')
 
 sidebar_title = CTkLabel(sidebar, text='Edit Wallet', font=title_font, anchor='w', padx=20)
-sidebar_title.grid(row=0, column=0, columnspan=2, pady=20, sticky='wens')
+sidebar_title.grid(row=0, column=1, columnspan=2, pady=20, sticky='wens')
 
     # create the options menu
 my_var1 = StringVar()
@@ -638,7 +638,7 @@ refresh_button.grid(row=4, column=0, pady=10, sticky='w', padx=20, columnspan=1,
 
 # create portfolio_value frame and contents
 portfolio_value = CTkFrame(window, corner_radius=20)
-portfolio_value.grid(row=4, column=0, padx=20, ipady=0, pady=20, sticky='nsew')
+portfolio_value.grid(row=4, column=1, padx=20, ipady=0, pady=20, sticky='nsew')
 portfolio_value.grid_columnconfigure((1,2), weight=1)
 
 portfolio_value_title = CTkLabel(portfolio_value, text='Portfolio Value:', font=title_font)
@@ -652,14 +652,14 @@ portfolio_value_title3.grid(row=1, column=0, padx=0, pady=10, sticky='ens', colu
 
 # create the nft grid frame and contents
 nft_grid = CTkScrollableFrame(window, corner_radius=20)
-nft_grid.grid(rowspan=6, row=0, column=2, sticky='wens', pady=20, padx=0, ipadx=200)
+nft_grid.grid(rowspan=6, row=0, column=3, sticky='wens', pady=20, padx=0, ipadx=200)
 
 nft_grid_maintitle = CTkLabel(nft_grid, text='Watchlist items', font=main_title_font, text_color='white')
 nft_grid_maintitle.grid(row=0, column=0, columnspan=2, pady=10)
 
 # create watchlist editor frame and contents
 watchlist = CTkFrame(window, corner_radius=20)
-watchlist.grid(row=0, column=4, padx=20, pady=20, sticky='wen', rowspan=3)
+watchlist.grid(row=0, column=5, padx=20, pady=20, sticky='wen', rowspan=3)
 
 padding_label1 = CTkLabel(watchlist, text='')
 padding_label1.grid(row=0, column=0, columnspan=2, pady=0, padx=20)
@@ -706,10 +706,11 @@ build_nftgrid()
 window.mainloop()
 
 
-# TODO  design nft cards
+# TODO design nft cards
 # TODO dark mode light theme
 # TODO api key window
 # TODO center the contents in the main window
 # TODO disable removing the last item from watchlist
 # TODO mvp frame set name text color to white
 # TODO secret magiceden api full feature
+# TODO text like g, fix
