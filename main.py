@@ -399,10 +399,9 @@ def refresh_price():
             item["vol_24"] = opensea_dict['vol24']
 
         elif item["platform"] == "magiceden":
-            item["token_floor_price"] = get_magiceden_price(item["api_name_format"])
-            #
-            # time.sleep(1)
-            item["vol_24"] = 0.00
+            magiceden_dict = get_magiceden_price(item["api_name_format"])
+            item["token_floor_price"] = magiceden_dict['floor']
+            item["vol_24"] = magiceden_dict['vol24']
             
     writejson(opened_data)
     
@@ -519,18 +518,26 @@ def get_opensea_price(required_format_name):
 
 
 def get_magiceden_price(required_format_name):
-    """enter nft collection name, returns floor price formatted to comma"""
+    """enter nft collection name, returns floor price and value 0 volume change as a dict"""
     magiceden_url = f"https://api-mainnet.magiceden.dev/v2/collections/{required_format_name}/stats"
     magiceden_headers = {
         "accept": "application/json",
         "Authorization": f"Bearer {magiceden_bearer}"
     }
     response = requests.get(magiceden_url, headers=magiceden_headers)
-    data = json.loads(response.text)
-    floor_price = data["floorPrice"]
-    formatted_number = "{:,.2f}".format(floor_price / 1000000000)
-    return formatted_number
+    if str(response) == '<Response [200]>':
+        data = json.loads(response.text)
+        floor_price = data["floorPrice"]
+        formatted_floor = "{:,.2f}".format(floor_price / 1000000000)
 
+        my_dict = {
+                'floor': float(formatted_floor),
+                'vol24': 0.0
+            }
+        return my_dict
+    
+    else:
+        return 'api error'
 
 def fetch_crypto_prices():
     '''refreshes the global dictionary of crypto live prices'''
@@ -567,7 +574,10 @@ def fetch_crypto_prices():
 def opensea_url_validator():
     '''validates the opensea url and add set to wallet for tracking, writes the data.json file'''
     opensea_prefix = 'https://opensea.io/collection/'
+    magiceden_prefix = 'https://magiceden.io/marketplace/'
+
     test_this_url = url_entry.get()
+
     if test_this_url.startswith(opensea_prefix):
         set_name = test_this_url.removeprefix(opensea_prefix)
         api_response = get_opensea_price(set_name)
@@ -615,7 +625,11 @@ def validate_api_window():
 def validate_api():
     '''validates the api key entered by the user, and if valid, stores the api key in the app_data json file'''
     global opensea_api
+    global magiceden_bearer
+
     opensea_api = api_entry.get()
+    bearer = bearer_entry.get()
+
     api_response = get_opensea_price('boredapeyachtclub')
     if api_response == 'api error':
         opensea_api = ""
@@ -629,6 +643,10 @@ def validate_api():
 
         appdata_dict['opensea_api'] = opensea_api
 
+        # check magiceden bearer token
+        if bearer != 'magiceden bearer (optional)...':
+            appdata_dict['magiceden_bearer'] = bearer
+
         with open(app_data, 'w') as appdata:
             json.dump(appdata_dict, appdata, indent=4)
 
@@ -641,10 +659,19 @@ def read_api():
 
     opensea_api = appdata_dict["opensea_api"]
 
+
+def read_bearer():
+    '''reads the magiceden bearer from the json file, update the global magiceden bearer variable'''
+    global magiceden_bearer
+    with open(app_data, 'r') as appdata:
+        appdata_dict = json.load(appdata)
+
+    magiceden_bearer = appdata_dict["magiceden_bearer"]    
+
 # create api checker window and hide it instantly
 popup_api_window = CTkToplevel()
 popup_api_window.withdraw()
-popup_api_window.geometry('400x150')
+popup_api_window.geometry('400x170')
 popup_api_window.title('API KEY VALIDATOR')
 popup_api_window.columnconfigure(0, weight=1)
 popup_api_window.rowconfigure(0, weight=1)
@@ -656,10 +683,13 @@ api_title = CTkLabel(popup_frame, text='Enter your Opensea API key below:', font
 api_title.pack()
 
 api_message = CTkLabel(popup_frame, text="if you don't have one, get it for free on https://docs.opensea.io/reference/api-keys", wraplength=300)
-api_message.pack()
+api_message.pack(pady=2)
 
-api_entry = CTkEntry(popup_frame, placeholder_text='api key...')
-api_entry.pack(pady=5)
+api_entry = CTkEntry(popup_frame, placeholder_text='api key...', width=250)
+api_entry.pack()
+
+bearer_entry = CTkEntry(popup_frame, placeholder_text='magiceden bearer (optional)...', width=250)
+bearer_entry.pack(pady=5)
 
 api_button = CTkButton(popup_frame, text='ENTER', command=validate_api)
 api_button.pack()
@@ -670,6 +700,7 @@ fetch_crypto_prices()  # catch live prices
 convert_floor() # updates floor price in $
 total_usd()  # updates the total portfolio worth
 read_api() # create api variable from json file
+read_bearer()  # create magiceden bearer variable from json file
 validate_api_window()  # open api window if api don't given in the json file
 #|||||||||||||||||||||||||||||||||||||    FRONTEND    ||||||||||||||||||||||||||||||||||||||||||||||||||
 
