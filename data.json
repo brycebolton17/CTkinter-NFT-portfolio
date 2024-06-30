@@ -5,10 +5,10 @@
         "platform": "opensea",
         "api_name_format": "pudgypenguins",
         "token": "ETH",
-        "token_floor_price": 10.85,
-        "usd_floor_price": 36667,
+        "token_floor_price": 10.55,
+        "usd_floor_price": 35700,
         "total$": 0,
-        "vol_24": 4.53,
+        "vol_24": -0.74,
         "watchlist_id": 3
     },
     {
@@ -17,10 +17,10 @@
         "platform": "opensea",
         "api_name_format": "lilpudgys",
         "token": "ETH",
-        "token_floor_price": 0.9,
-        "usd_floor_price": 3041,
+        "token_floor_price": 0.89,
+        "usd_floor_price": 3011,
         "total$": 0,
-        "vol_24": 0.08,
+        "vol_24": -0.59,
         "watchlist_id": 4
     },
     {
@@ -29,10 +29,10 @@
         "platform": "opensea",
         "api_name_format": "pudgyrods",
         "token": "ETH",
-        "token_floor_price": 0.26,
-        "usd_floor_price": 878,
+        "token_floor_price": 0.34,
+        "usd_floor_price": 1150,
         "total$": 0,
-        "vol_24": 24.89,
+        "vol_24": 0.1,
         "watchlist_id": 5
     },
     {
@@ -42,7 +42,7 @@
         "api_name_format": "holofriendsnft",
         "token": "ETH",
         "token_floor_price": 0.25,
-        "usd_floor_price": 844,
+        "usd_floor_price": 845,
         "total$": 0,
         "vol_24": 0.0,
         "watchlist_id": 6

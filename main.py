@@ -27,8 +27,10 @@ dollar_huf = 0
 main_title_font = ('Helvetica', 40, 'bold')
 title_font = ('Helvetica', 24, 'bold')
 title_font2 = ('Helvetica', 18, 'bold')
+title_font3 = ('Helvetica', 14, 'bold')
 vol24_font = ('Helvetica', 34, 'bold')
 default_font = ('Helvetica', 13)
+default_font_bold = ('Helvetica', 13, 'bold')
 
     # colors
 window_color = ('#C5C6C7', '#1F2833')
@@ -46,7 +48,7 @@ opmenu_button_color = 'grey'
 opmenu_button_hover_color = 'white'
 orange_color = 'orange' # mvp frame background color
 blue_green_color = '#45A29E' # nft grid frame background color
-
+nigh_blue_color = '#1F2833'
 
 # create window
 window = CTk(fg_color=window_color)
@@ -234,30 +236,29 @@ def build_nftgrid():
     for item in app_data_list:
         if item["watchlist_id"] % 2 == 0:  # if id is even (paros), column=1
             column = 1
-            # row = int(item["watchlist_id"] / 2)  # row = id/2
             row = start_row
             start_row += 1
 
-        # elif item["watchlist_id"] == 1: 
-        #     column = 0
-        #     row = 1
-
-        # elif item["watchlist_id"] == 2: 
-        #     column = 1
-        #     row = 1
-
         else:
             column = 0
-            # row = int(item["watchlist_id"] - 2)  # row = id-1
             row = start_row
   
         # create the widget and store it in a list
-        # TODO design it
         w_frame = CTkFrame(nft_grid, width=200, height=150, corner_radius=15, fg_color=blue_green_color, border_color='#66FCF1', border_width=3)
         w_frame.grid_columnconfigure((0,1), weight=1)
         
+        # styling
+        titles_color = nigh_blue_color
+        labels_color = 'white'
+
+        # different styling for non holding sets
+        if item["quantity"] == 0:
+            w_frame.configure(fg_color = '#0B0C10')
+            titles_color = '#C5C6C7'
+            labels_color = '#66FCF1'
+
         # title
-        set_title = CTkLabel(w_frame, text=item["name"], font=title_font2, width=220, height=60, anchor='w', text_color='white')
+        set_title = CTkLabel(w_frame, text=item["name"], font=title_font2, width=220, text_color=titles_color, anchor='w')
         set_title.grid(row=0, column=0, padx=10, pady=10, sticky='wens', columnspan=2)
         
         # attribute labels
@@ -270,22 +271,56 @@ def build_nftgrid():
         else:
             q = item["quantity"]
 
-        set_quantity_label = CTkLabel(w_frame, text=f'Quantity: {q}', anchor='w', font=default_font, text_color=default_text_color) # , , 
-        set_quantity_label.grid(row=1, column=0, padx=10, pady=0, sticky='wens')
-
-        set_floor_label = CTkLabel(w_frame, text=f'Floor price: {item["token_floor_price"]} {item['token']} / {format_currencies(item['usd_floor_price'], 'USD')}', anchor='w', font=default_font, text_color=default_text_color) # , , 
-        set_floor_label.grid(row=2, column=0, padx=10, pady=0, sticky='wens')
-
-        set_total_label = CTkLabel(w_frame, text=f'Holdings: {format_currencies(item['total$'], 'USD')} / {format_currencies(item['total$'], 'HUF')}', anchor='w', font=default_font, text_color=default_text_color) # , , 
-        set_total_label.grid(row=3, column=0, padx=10, pady=0, sticky='wens')
-
-        set_vol24_label = CTkLabel(w_frame, text=f'Volume change (24h): {item['vol_24']}%', anchor='w', font=default_font, text_color=default_text_color)
-        set_vol24_label.grid(row=4, column=0, padx=10, pady=0, sticky='wens')
-
-        empty_label = CTkLabel(w_frame, text='')
-        empty_label.grid(row=5, column=0, padx=10, pady=5, sticky='wens')
+        title_line = CTkFrame(w_frame, fg_color=titles_color, height=2)
+        title_line.grid(row=1, column=0, padx=10, sticky='ew', columnspan=2)
 
         #
+        set_floor_title = CTkLabel(w_frame, text=f'Floor price:', anchor='sw', font=title_font3, text_color=titles_color, wraplength=80)
+        set_floor_title.grid(row=2, column=0, padx=10, pady=0, sticky='wens')
+        
+        set_floor_label = CTkLabel(w_frame, text=f'{item["token_floor_price"]} {item['token']}', anchor='nw', font=default_font, text_color=labels_color, wraplength=80)
+        set_floor_label.grid(row=3, column=0, padx=10, pady=0, sticky='wens')
+
+        #
+        set_floor_usd_title = CTkLabel(w_frame, text=f'Floor price ($):', anchor='sw', font=title_font3, text_color=titles_color, wraplength=100)
+        set_floor_usd_title.grid(row=2, column=1, padx=10, pady=0, sticky='wens')
+        
+        set_floor_usd_label = CTkLabel(w_frame, text=f'{format_currencies(item['usd_floor_price'], 'USD')}', anchor='nw', font=default_font, text_color=labels_color, wraplength=80)
+        set_floor_usd_label.grid(row=3, column=1, padx=10, pady=0, sticky='wens')
+
+        #
+        set_holdings_title = CTkLabel(w_frame, text=f'Holdings:', anchor='sw', font=title_font3, text_color=titles_color)
+        set_holdings_title.grid(row=4, column=0, padx=10, pady=0, sticky='wens')
+
+
+        set_holdings_label = CTkLabel(w_frame, text=f'{format_currencies(item['total$'], 'USD')}', anchor='nw', font=default_font, text_color=labels_color)
+        set_holdings_label.grid(row=5, column=0, padx=10, pady=0, sticky='wens', columnspan=2)
+
+        #
+        set_quantity_title = CTkLabel(w_frame, text=f'Quantity:', anchor='sw', font=title_font3, text_color=titles_color)
+        set_quantity_title.grid(row=4, column=1, padx=10, pady=0, sticky='wens')
+
+        set_quantity_label = CTkLabel(w_frame, text=f'{q}', anchor='nw', font=default_font, text_color=labels_color)
+        set_quantity_label.grid(row=5, column=1, padx=10, pady=0, sticky='wens')
+
+        #
+        set_total_huf_title = CTkLabel(w_frame, text=f'Holdings (HUF):', anchor='sw', font=title_font3, text_color=titles_color)
+        set_total_huf_title.grid(row=6, column=0, padx=10, pady=0, sticky='wens', columnspan=2)
+
+        set_total_huf_label = CTkLabel(w_frame, text=f'{format_currencies(item['total$'], 'HUF')}', anchor='nw', font=default_font, text_color=labels_color)
+        set_total_huf_label.grid(row=7, column=0, padx=10, pady=0, sticky='wens', columnspan=2)
+
+        # hide it for now
+        # set_vol24_title = CTkLabel(w_frame, text=f'VOL (24h):', anchor='sw', font=title_font3, text_color=nigh_blue_color)
+        # set_vol24_title.grid(row=4, column=1, padx=10, pady=0, sticky='wens')
+
+        # set_vol24_label = CTkLabel(w_frame, text=f'{item['vol_24']}%', anchor='nw', font=default_font, text_color='white')
+        # set_vol24_label.grid(row=5, column=1, padx=10, pady=0, sticky='wens')
+
+        #
+        empty_label = CTkLabel(w_frame, text='')
+        empty_label.grid(row=8, column=0, padx=10, pady=3, sticky='wens', columnspan=2)
+
         widget_list.append(w_frame)
         w_frame.grid(column=column, row=row, pady=15, padx=30, ipadx=0)
 
@@ -421,7 +456,7 @@ def format_currencies(num, currency):
         cur = ' Ft.'
     else:
         total_currency_str = str(num)
-        cur = '$'
+        cur = ' $'
 
     length = len(total_currency_str)
     if length == 5:
