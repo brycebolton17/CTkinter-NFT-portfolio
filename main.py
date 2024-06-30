@@ -636,7 +636,7 @@ def validate_api():
     global magiceden_bearer
 
     opensea_api = api_entry.get()
-    bearer = bearer_entry.get()
+    # bearer = bearer_entry.get()
 
     api_response = get_opensea_price('boredapeyachtclub')
     if api_response == 'api error':
@@ -652,8 +652,8 @@ def validate_api():
         appdata_dict['opensea_api'] = opensea_api
 
         # check magiceden bearer token
-        if bearer != 'magiceden bearer (optional)...':
-            appdata_dict['magiceden_bearer'] = bearer
+        # if bearer != 'magiceden bearer (optional)...':
+        #     appdata_dict['magiceden_bearer'] = bearer
 
         with open(app_data, 'w') as appdata:
             json.dump(appdata_dict, appdata, indent=4)
