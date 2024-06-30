@@ -6,9 +6,9 @@ This Tkinter nft portfolio application can be used on **Mac**, **Windows** and *
 
 - Add any NFT set from opensea.io to your watchlist, to track ethereum based nft sets.
 
-- Add any NFT set from magiceden.io to your watchlist, to track solana based nft sets.
+- Add any NFT set from magiceden.io to your watchlist, to track solana based nft sets. Please only add Magiceden sets, that has a floor price in SOL, otherwise error can occur!
 
-- (Floor price in native currency, floor price in $ info available from every set)
+- Floor price in native currency, floor price in $ info available from every set
 
 - Append your simulated portfolio with any set from your watchlist, to keep track of your nft sets worth in $ or HUF currencies.
 
