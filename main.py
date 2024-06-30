@@ -20,6 +20,8 @@ crypto_prices = {
 dollar_huf = 0
 
 # create styling
+# TODO organize coloring variables and apperance.json
+
     # fonts
 main_title_font = ('Helvetica', 40, 'bold')
 title_font = ('Helvetica', 24, 'bold')
@@ -47,7 +49,7 @@ orange_color = 'orange' # mvp frame background color
 blue_green_color = '#45A29E' # nft grid frame background color
 nigh_blue_color = '#1F2833'
 
-# create window
+# create main window
 window = CTk(fg_color=window_color)
 window.withdraw()  # auto switch to this window from terminal, vscode, etc....
 
@@ -65,25 +67,10 @@ window.grid_rowconfigure((2), weight=10)
 set_default_color_theme("apperance.json")
 set_appearance_mode('system')
 # set_appearance_mode('dark')
-
+# TODO apperance mode selector button
 
 
 #|||||||||||||||||||||||||||||||||||||    FRONTEND FUNCTIONS    ||||||||||||||||||||||||||||||||||||||||||||||||||
-# dark image enchancer
-# def dark(image):
-#     enhancer = ImageEnhance.Brightness(image)
-#     return enhancer.enhance(0.9)
-
-
-# # image process
-# def compress_image(image_filename):
-#     '''inputs an image, returns the image as ImageTk PhotoImage'''
-#     image_pil = Image.open(f'images/{image_filename}.png')
-#     resized = image_pil.resize((nft_widget_width, nft_widget_height), Image.Resampling.LANCZOS)
-#     darkened = dark(resized)
-#     return darkened
-
-
 # open image as CTk object
 def ctk_image_open(filename):
     image_path = f'images/{filename}.png'
@@ -409,6 +396,8 @@ def refresh_price():
     fetch_crypto_prices() # refresh ETH, SOL, etc.....
     messagebox.showinfo("Information", "Prices Refreshed!")
     refresh_gui('refresh_function')
+
+
 #|||||||||||||||||||||||||||||||||||||    CURRENCY CALCULATING / SUM FUNCTIONS    |||||||||||||||||||||||||||||||
 def convert_floor():
     '''write json with floor prices converted to usd'''
@@ -527,6 +516,9 @@ def get_magiceden_price(required_format_name):
     response = requests.get(magiceden_url, headers=magiceden_headers)
     if str(response) == '<Response [200]>':
         data = json.loads(response.text)
+        if data['listedCount'] == 0:
+            return 'api error'
+
         floor_price = data["floorPrice"]
         formatted_floor = "{:,.2f}".format(floor_price / 1000000000)
 
@@ -575,12 +567,27 @@ def opensea_url_validator():
     '''validates the opensea url and add set to wallet for tracking, writes the data.json file'''
     opensea_prefix = 'https://opensea.io/collection/'
     magiceden_prefix = 'https://magiceden.io/marketplace/'
+    this_prefix = ''
 
     test_this_url = url_entry.get()
 
     if test_this_url.startswith(opensea_prefix):
-        set_name = test_this_url.removeprefix(opensea_prefix)
-        api_response = get_opensea_price(set_name)
+        this_prefix = opensea_prefix
+    elif test_this_url.startswith(magiceden_prefix):
+        this_prefix = magiceden_prefix
+
+    #
+    if this_prefix != '':
+        set_name = test_this_url.removeprefix(this_prefix)
+        #
+        if this_prefix == opensea_prefix:
+            api_response = get_opensea_price(set_name)
+            token = 'ETH'
+
+        elif this_prefix == magiceden_prefix:
+            api_response = get_magiceden_price(set_name)
+            token = 'SOL'
+        #
         if not api_response == 'api error':
             wallet_list = readjson()
             for item in wallet_list:
@@ -595,7 +602,7 @@ def opensea_url_validator():
                 "quantity": 0.0,
                 "platform": "opensea",
                 "api_name_format": set_name,
-                "token": "ETH",
+                "token": token,
                 "token_floor_price": api_response['floor'],
                 "usd_floor_price": 0,
                 "total$": 0,
@@ -671,7 +678,7 @@ def read_bearer():
 # create api checker window and hide it instantly
 popup_api_window = CTkToplevel()
 popup_api_window.withdraw()
-popup_api_window.geometry('400x170')
+popup_api_window.geometry('500x250')
 popup_api_window.title('API KEY VALIDATOR')
 popup_api_window.columnconfigure(0, weight=1)
 popup_api_window.rowconfigure(0, weight=1)
@@ -682,8 +689,17 @@ popup_frame.grid(row=0, column=0, sticky='wens')
 api_title = CTkLabel(popup_frame, text='Enter your Opensea API key below:', font=title_font2)
 api_title.pack()
 
-api_message = CTkLabel(popup_frame, text="if you don't have one, get it for free on https://docs.opensea.io/reference/api-keys", wraplength=300)
-api_message.pack(pady=2)
+api_message1 = CTkLabel(popup_frame, text="if you don't have one, get it for free on https://docs.opensea.io/reference/api-keys", wraplength=300)
+api_message1.pack(pady=2)
+
+emptyframe1 = CTkFrame(popup_frame, width=300, fg_color=('black', '#66FCF1'), height=3)
+emptyframe1.pack(pady=5)
+
+api_message2 = CTkLabel(popup_frame, text="You can use a Magiceden bearer token for solana NFT sets, but it's optional. Contact creators@magiceden.io for a bearer token.", wraplength=300)
+api_message2.pack(pady=2)
+
+emptyframe2 = CTkFrame(popup_frame, width=300, fg_color=('black', '#66FCF1'), height=3)
+emptyframe2.pack(pady=5)
 
 api_entry = CTkEntry(popup_frame, placeholder_text='api key...', width=250)
 api_entry.pack()
@@ -782,7 +798,7 @@ padding_label1.grid(row=0, column=0, columnspan=2, pady=0, padx=20)
 watchlist_title = CTkLabel(watchlist, text='Add to Watchlist', font=title_font)
 watchlist_title.grid(row=1, column=0, columnspan=2, pady=0, padx=20, sticky='w')
 
-watching_list_message = CTkLabel(watchlist, text='(Watchlist items can be added to wallet later)', text_color=message_color)
+watching_list_message = CTkLabel(watchlist, text='(Watchlist items can be added to wallet later.)', text_color=message_color, wraplength=280)
 watching_list_message.grid(row=2, column=0, columnspan=2, pady=0, padx=20)
 
 padding_label2 = CTkLabel(watchlist, text='')
@@ -791,7 +807,7 @@ padding_label2.grid(row=3, column=0, columnspan=2, pady=0, padx=20)
 set_name_entry = CTkEntry(watchlist, placeholder_text='Enter a set name', fg_color='white', border_width=2, text_color=default_text_color)
 set_name_entry.grid(row=4, column=0, columnspan=2, pady=0, padx=20, sticky='w')
 
-url_entry = CTkEntry(watchlist, placeholder_text='paste opensea.io url', fg_color='white', border_width=2, text_color=default_text_color)
+url_entry = CTkEntry(watchlist, placeholder_text='paste collection url', fg_color='white', border_width=2, text_color=default_text_color)
 url_entry.grid(row=5, column=0, columnspan=2, pady=2, padx=20, sticky='w')
 
 submit_button = CTkButton(watchlist, text='SUBMIT', command=opensea_url_validator)
@@ -803,7 +819,7 @@ padding_label3.grid(row=7, column=0, columnspan=2, pady=20, padx=20)
 remove_watchlist_title = CTkLabel(watchlist, text='Remove from Watchlist', font=title_font)
 remove_watchlist_title.grid(row=8, column=0, columnspan=2, pady=15, padx=20, sticky='w')
 
-    # create the options menu
+    # create the options menu 2
 my_var2 = StringVar()
 my_var2.set('Choose a set')
 collection_optionsmenu2 = CTkOptionMenu(watchlist, fg_color=opmenu_color, values=options(), variable=my_var2, command=opmenu_text2, text_color=greyed_out_color)
@@ -819,6 +835,3 @@ padding_label4.grid(row=11, column=0, columnspan=2, pady=0, padx=20)
 
 build_nftgrid()
 window.mainloop()
-
-# TODO magiceden api full feature
-# TODO organize coloring

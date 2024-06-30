@@ -6,7 +6,7 @@
         "api_name_format": "pudgypenguins",
         "token": "ETH",
         "token_floor_price": 10.55,
-        "usd_floor_price": 35720,
+        "usd_floor_price": 35652,
         "total$": 0,
         "vol_24": -0.71,
         "watchlist_id": 3
@@ -18,7 +18,7 @@
         "api_name_format": "lilpudgys",
         "token": "ETH",
         "token_floor_price": 0.89,
-        "usd_floor_price": 3013,
+        "usd_floor_price": 3007,
         "total$": 0,
         "vol_24": -0.58,
         "watchlist_id": 4
@@ -30,7 +30,7 @@
         "api_name_format": "pudgyrods",
         "token": "ETH",
         "token_floor_price": 0.3,
-        "usd_floor_price": 1015,
+        "usd_floor_price": 1013,
         "total$": 0,
         "vol_24": -0.19,
         "watchlist_id": 5
@@ -42,21 +42,9 @@
         "api_name_format": "holofriendsnft",
         "token": "ETH",
         "token_floor_price": 0.25,
-        "usd_floor_price": 846,
+        "usd_floor_price": 844,
         "total$": 0,
         "vol_24": 0.0,
         "watchlist_id": 6
-    },
-    {
-        "name": "BoDoggos",
-        "quantity": 1.0,
-        "platform": "magiceden",
-        "api_name_format": "bodoggos",
-        "token": "SOL",
-        "token_floor_price": 2.95,
-        "usd_floor_price": 416,
-        "total$": 416,
-        "vol_24": 0.0,
-        "watchlist_id": 7
     }
 ]
