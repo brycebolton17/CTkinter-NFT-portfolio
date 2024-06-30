@@ -701,10 +701,10 @@ api_message2.pack(pady=2)
 emptyframe2 = CTkFrame(popup_frame, width=300, fg_color=('black', '#66FCF1'), height=3)
 emptyframe2.pack(pady=5)
 
-api_entry = CTkEntry(popup_frame, placeholder_text='api key...', width=250)
+api_entry = CTkEntry(popup_frame, placeholder_text='Opensea api key...', width=250)
 api_entry.pack()
 
-bearer_entry = CTkEntry(popup_frame, placeholder_text='magiceden bearer (optional)...', width=250)
+bearer_entry = CTkEntry(popup_frame, placeholder_text='Magiceden bearer (optional)...', width=250)
 bearer_entry.pack(pady=5)
 
 api_button = CTkButton(popup_frame, text='ENTER', command=validate_api)

@@ -2,19 +2,23 @@ This Tkinter nft portfolio application can be used on **Mac**, **Windows** and *
 
 ## Features
 
-- Add any NFT set from opensea.io to your collection
-- Add / Remove nft to your portfolio
-- Refresh their floor price with one click, and also refresh the cyrpto prices (ETH, SOL, MATIC)
-- Track the value of your portfolio in USD ($) and HUF (hungarian forint)
-- Check the MVP set of the day (Biggest volume change in 24h)
+- Add any NFT set from opensea.io to your watchlist, to track ethereum based nft sets.
+
+- Add any NFT set from magiceden.io to your watchlist, to track solana based nft sets. Floor price in native currency, floor price in $ info available from every set.
+
+- Append your simulated portfolio with any set from your watchlist, to keep track of your nft sets worth in $ or HUF currencies.
+
+- Track the total value of your portfolio in $ and HUF.
+
+- Refresh live prices, including every nft set, ETH, SOL and USD - HUF price. It also re calculates the whole portfolio.
+
+- Light / Dark mode, using the built in system setting from your device.
+
 
 ## Coming Features
-- GUI for adding a new set to the JSON file
 - Export collectin as a csv file
-- GUI to display NFT sets as widgets
-  - total value
-  - name
-  - image of the set
+- Dark / Light mode selector
+
 
 ## Installation
 - install the newest version of python from (python.org) to your machine.
@@ -28,45 +32,18 @@ cd CTkinter-NFT-portfolio
 ```sh
 pip install -r requirments.txt
 ```
-## Guide
-Set up your Opensea API key first
-- register on opensea.io and collect your api key for free:
-  - https://docs.opensea.io/reference/api-keys
-
- 
-- edit main.py (line 17 in the code) and enter your api key here:
-```sh
-opensea_api = "" # enter your opensea API key here
-```
-Every NFT collection stored in a JSON file as a snippet like this:
-```sh
-{
-        "name": "Lil Pudgy",
-        "quantity": 0.0,
-        "platform": "opensea",
-        "api_name_format": "lilpudgys",
-        "token": "ETH",
-        "token_floor_price": "0.75",
-        "total$": 0,
-        "vol_24": "0.86"
-}
-```
-
-To add a new NFT set, simply add a new snippet to the data.json file
-```sh
-{
-        "name": "Collection Name",  # A name of the collection you want (can be anything)
-        "quantity": 0.0,
-        "platform": "opensea",
-        "api_name_format": "lilpudgys",  # https://opensea.io/collection/lilpudgys (check the name at the end in the opensea URL)
-        "token": "ETH",  # leave it as "ETH" in most cases
-        "token_floor_price": "0.00",
-        "total$": 0,
-        "vol_24": "0.0"
-}
-```
 ## Run the app
 ```sh
 cd CTkinter-NFT-portfolio
 python3 main.py
 ```
+## Guide
+Get an Opensea API key first
+- You can register an opensea.io account to get a free api key. More info: https://docs.opensea.io/reference/api-keys
+
+- Optionally, you can contact Magiceden for a bearer token to access solana nft features in this app. If you decide not to, you can skip this feature.
+
+Enter your api key (you must enter a valid key to bypass this window) after started the app:
+
+![alt text](images/api_window.png)
+
