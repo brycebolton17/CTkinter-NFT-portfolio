@@ -6,7 +6,7 @@
         "api_name_format": "pudgypenguins",
         "token": "ETH",
         "token_floor_price": 10.55,
-        "usd_floor_price": 35700,
+        "usd_floor_price": 35689,
         "total$": 0,
         "vol_24": -0.74,
         "watchlist_id": 3
@@ -18,7 +18,7 @@
         "api_name_format": "lilpudgys",
         "token": "ETH",
         "token_floor_price": 0.89,
-        "usd_floor_price": 3011,
+        "usd_floor_price": 3010,
         "total$": 0,
         "vol_24": -0.59,
         "watchlist_id": 4
@@ -29,10 +29,10 @@
         "platform": "opensea",
         "api_name_format": "pudgyrods",
         "token": "ETH",
-        "token_floor_price": 0.34,
-        "usd_floor_price": 1150,
+        "token_floor_price": 0.3,
+        "usd_floor_price": 1014,
         "total$": 0,
-        "vol_24": 0.1,
+        "vol_24": 0.12,
         "watchlist_id": 5
     },
     {

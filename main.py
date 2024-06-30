@@ -1,14 +1,11 @@
-from customtkinter import *  # pip install customtkinter
-# from CTkMessagebox import CTkMessagebox
-from PIL import ImageTk, Image, ImageEnhance  # pip install pillow
+from customtkinter import *
+from PIL import ImageTk, Image, ImageEnhance
 import requests
 from currency_converter import CurrencyConverter
-# from dotenv import load_dotenv
 
 from tkinter import messagebox
 import json
 import time
-import os
 
 # global vars
 widget_list = []
@@ -34,13 +31,13 @@ default_font_bold = ('Helvetica', 13, 'bold')
 
     # colors
 window_color = ('#C5C6C7', '#1F2833')
-message_color = 'white'
+message_color = ('black', 'white')
 
 default_text_color = 'black' # mvp message, watchlist message, (BUY, SELL, REFRESH, EXPORT, SUBMIT, CONFIRM)-button text, (quantity, set, url)-entry, op menu 1,2 on refresh function
 vol24_percent = '#39e75f' # bright green
-green_color = '#08a045' # portfolio value text, buy button
-dark_green_color = '#0b6e4f' # buy button hover
-red_color = '#ff2c2c' # remove button, watchlist frame background color
+green_color = ('black', '#08a045') # portfolio value text, buy button
+dark_green_color = '#077b37' # buy button hover
+red_color = ('black','#ff2c2c') # remove button, watchlist frame background color
 dark_red_color = '#d1001f'  # remove button hover
 greyed_out_color = '#565b5d' # options menu default text
 opmenu_color = 'white'
@@ -66,7 +63,8 @@ window.grid_rowconfigure((2), weight=10)
 
 
 set_default_color_theme("apperance.json")
-set_appearance_mode('dark')
+set_appearance_mode('system')
+# set_appearance_mode('dark')
 
 
 
@@ -244,7 +242,7 @@ def build_nftgrid():
             row = start_row
   
         # create the widget and store it in a list
-        w_frame = CTkFrame(nft_grid, width=200, height=150, corner_radius=15, fg_color=blue_green_color, border_color='#66FCF1', border_width=3)
+        w_frame = CTkFrame(nft_grid, width=200, height=150, corner_radius=15, fg_color=(blue_green_color,blue_green_color), border_color=('black','#66FCF1'), border_width=3)
         w_frame.grid_columnconfigure((0,1), weight=1)
         
         # styling
@@ -253,9 +251,9 @@ def build_nftgrid():
 
         # different styling for non holding sets
         if item["quantity"] == 0:
-            w_frame.configure(fg_color = '#0B0C10')
-            titles_color = '#C5C6C7'
-            labels_color = '#66FCF1'
+            w_frame.configure(fg_color = ('#ffffff', '#0B0C10'))
+            titles_color = ('black','#C5C6C7')
+            labels_color = (blue_green_color,'#66FCF1')
 
         # title
         set_title = CTkLabel(w_frame, text=item["name"], font=title_font2, width=220, text_color=titles_color, anchor='w')
@@ -646,7 +644,7 @@ def read_api():
 # create api checker window and hide it instantly
 popup_api_window = CTkToplevel()
 popup_api_window.withdraw()
-popup_api_window.geometry('400x100')
+popup_api_window.geometry('400x150')
 popup_api_window.title('API KEY VALIDATOR')
 popup_api_window.columnconfigure(0, weight=1)
 popup_api_window.rowconfigure(0, weight=1)
@@ -657,11 +655,15 @@ popup_frame.grid(row=0, column=0, sticky='wens')
 api_title = CTkLabel(popup_frame, text='Enter your Opensea API key below:', font=title_font2)
 api_title.pack()
 
+api_message = CTkLabel(popup_frame, text="if you don't have one, get it for free on https://docs.opensea.io/reference/api-keys", wraplength=300)
+api_message.pack()
+
 api_entry = CTkEntry(popup_frame, placeholder_text='api key...')
 api_entry.pack(pady=5)
 
 api_button = CTkButton(popup_frame, text='ENTER', command=validate_api)
 api_button.pack()
+
 # program start
 dollar_to_huf()  # catch live prices
 fetch_crypto_prices()  # catch live prices
@@ -705,10 +707,10 @@ collection_optionsmenu.grid(row=1, column=0, pady=0, sticky='w', padx=20, column
 quantity_entry = CTkEntry(sidebar, placeholder_text='Quantity (for example: 1 or 0.5)', fg_color='white', width=220, border_width=2, text_color=default_text_color)
 quantity_entry.grid(row=2, column=0, pady=10, sticky='w', padx=20, columnspan=2)
 
-add_button = CTkButton(sidebar, text='BUY', width=100, command=lambda: button_pressed('add'), border_color=green_color, text_color=green_color)
+add_button = CTkButton(sidebar, text='BUY', width=100, command=lambda: button_pressed('add'), border_color=green_color, text_color=green_color, fg_color=('#08a045','#0B0C10'), hover_color = (dark_green_color, "#1F2833"))
 add_button.grid(row=3, column=0, pady=0, sticky='w', padx=20, columnspan=1, ipady=5)
 
-remove_button = CTkButton(sidebar, text='SELL', width=100, command=lambda: button_pressed('remove'), border_color=red_color, text_color=red_color)
+remove_button = CTkButton(sidebar, text='SELL', width=100, command=lambda: button_pressed('remove'), border_color=red_color, text_color=red_color, fg_color=('#ff2c2c','#0B0C10'), hover_color = (dark_red_color, "#1F2833"))
 remove_button.grid(row=3, column=1, pady=0, sticky='w', padx=0, columnspan=1, ipady=5)
 
 # refresh_button = CTkButton(sidebar, text='REFRESH PRICES', width=220, command=refresh_price)
@@ -726,17 +728,17 @@ portfolio_value.grid_columnconfigure((1,2), weight=1)
 portfolio_value_title = CTkLabel(portfolio_value, text='Portfolio Value:', font=title_font)
 portfolio_value_title.grid(row=0, column=0, padx=20, pady=20, sticky='wens')
 
-portfolio_value_title2 = CTkLabel(portfolio_value, text=format_currencies(portfolio_total(), 'USD'), font=title_font, text_color='white')
+portfolio_value_title2 = CTkLabel(portfolio_value, text=format_currencies(portfolio_total(), 'USD'), font=title_font, text_color=('#45A29E','white'))
 portfolio_value_title2.grid(row=0, column=1, padx=0, pady=20, sticky='wns')
 
-portfolio_value_title3 = CTkLabel(portfolio_value, text=format_currencies(portfolio_total(), 'HUF'), font=title_font, text_color='white')
+portfolio_value_title3 = CTkLabel(portfolio_value, text=format_currencies(portfolio_total(), 'HUF'), font=title_font, text_color=('#45A29E','white'))
 portfolio_value_title3.grid(row=1, column=0, padx=0, pady=10, sticky='ens', columnspan=2)
 
 # create the nft grid frame and contents
 nft_grid = CTkScrollableFrame(window, corner_radius=20)
 nft_grid.grid(rowspan=6, row=0, column=3, sticky='wens', pady=20, padx=0, ipadx=200)
 
-nft_grid_maintitle = CTkLabel(nft_grid, text='Watchlist items', font=main_title_font, text_color='white')
+nft_grid_maintitle = CTkLabel(nft_grid, text='Watchlist items', font=main_title_font, text_color=('black', 'white'))
 nft_grid_maintitle.grid(row=0, column=0, columnspan=2, pady=10)
 
 # create watchlist editor frame and contents
@@ -787,9 +789,5 @@ padding_label4.grid(row=11, column=0, columnspan=2, pady=0, padx=20)
 build_nftgrid()
 window.mainloop()
 
-# TODO design nft cards
-# TODO dark mode light theme
-# TODO mvp frame set name text color to white
-# TODO secret magiceden api full feature
-# TODO text like g, fix
-# TODO add opensea api window message
+# TODO magiceden api full feature
+# TODO organize coloring
