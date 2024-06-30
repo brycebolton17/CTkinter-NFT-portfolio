@@ -509,6 +509,7 @@ def get_opensea_price(required_format_name):
 def get_magiceden_price(required_format_name):
     """enter nft collection name, returns floor price and value 0 volume change as a dict"""
     magiceden_url = f"https://api-mainnet.magiceden.dev/v2/collections/{required_format_name}/stats"
+    print(magiceden_bearer)
     magiceden_headers = {
         "accept": "application/json",
         "Authorization": f"Bearer {magiceden_bearer}"
@@ -678,7 +679,7 @@ def read_bearer():
 # create api checker window and hide it instantly
 popup_api_window = CTkToplevel()
 popup_api_window.withdraw()
-popup_api_window.geometry('500x250')
+popup_api_window.geometry('500x170')
 popup_api_window.title('API KEY VALIDATOR')
 popup_api_window.columnconfigure(0, weight=1)
 popup_api_window.rowconfigure(0, weight=1)
@@ -690,25 +691,25 @@ api_title = CTkLabel(popup_frame, text='Enter your Opensea API key below:', font
 api_title.pack()
 
 api_message1 = CTkLabel(popup_frame, text="if you don't have one, get it for free on https://docs.opensea.io/reference/api-keys", wraplength=300)
-api_message1.pack(pady=2)
+api_message1.pack(pady=5)
 
 emptyframe1 = CTkFrame(popup_frame, width=300, fg_color=('black', '#66FCF1'), height=3)
 emptyframe1.pack(pady=5)
 
-api_message2 = CTkLabel(popup_frame, text="You can use a Magiceden bearer token for solana NFT sets, but it's optional. Contact creators@magiceden.io for a bearer token.", wraplength=300)
-api_message2.pack(pady=2)
+# api_message2 = CTkLabel(popup_frame, text="You can use a Magiceden bearer token for solana NFT sets, but it's optional. Contact creators@magiceden.io for a bearer token.", wraplength=300)
+# api_message2.pack(pady=2)
 
-emptyframe2 = CTkFrame(popup_frame, width=300, fg_color=('black', '#66FCF1'), height=3)
-emptyframe2.pack(pady=5)
+# emptyframe2 = CTkFrame(popup_frame, width=300, fg_color=('black', '#66FCF1'), height=3)
+# emptyframe2.pack(pady=5)
 
 api_entry = CTkEntry(popup_frame, placeholder_text='Opensea api key...', width=250)
 api_entry.pack()
 
-bearer_entry = CTkEntry(popup_frame, placeholder_text='Magiceden bearer (optional)...', width=250)
-bearer_entry.pack(pady=5)
+# bearer_entry = CTkEntry(popup_frame, placeholder_text='Magiceden bearer (optional)...', width=250)
+# bearer_entry.pack(pady=5)
 
 api_button = CTkButton(popup_frame, text='ENTER', command=validate_api)
-api_button.pack()
+api_button.pack(pady=5)
 
 # program start
 dollar_to_huf()  # catch live prices

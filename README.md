@@ -14,6 +14,8 @@ This Tkinter nft portfolio application can be used on **Mac**, **Windows** and *
 
 - Refresh live prices, including every nft set, ETH, SOL and USD - HUF price. It also re calculates the whole portfolio.
 
+- MVP of the day: the set with the highest volume change (%) in 24h. Only Opensea nft included in this feature.
+
 - Light / Dark mode, using the built in system setting from your device.
 
 
@@ -43,7 +45,7 @@ python3 main.py
 Get an Opensea API key first
 - You can register an opensea.io account to get a free api key. More info: https://docs.opensea.io/reference/api-keys
 
-- Optionally, you can contact Magiceden for a bearer token to access solana nft features in this app. If you decide not to, you can skip this feature.
+- (Magiceden doesn't require an API key)
 
 Enter your api key (you must enter a valid key to bypass this window) after started the app:
 
