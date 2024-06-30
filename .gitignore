@@ -6,3 +6,4 @@
 
 # Ignore .env file
 .env
+images/.DS_Store
