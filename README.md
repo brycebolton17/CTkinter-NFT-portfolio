@@ -1,5 +1,7 @@
 This Tkinter nft portfolio application can be used on **Mac**, **Windows** and **Linux**, thanks to CTkinter package in python.
 
+![alt text](images/Preview.png)
+
 ## Features
 
 - Add any NFT set from opensea.io to your watchlist, to track ethereum based nft sets.
