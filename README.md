@@ -20,6 +20,7 @@ This Tkinter nft portfolio application can be used on **Mac**, **Windows** and *
 
 - Light / Dark mode, using the built in system setting from your device.
 
+- Responsive design.
 
 ## Coming Features
 - Export collectin as a csv file
