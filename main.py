@@ -65,8 +65,8 @@ window.grid_rowconfigure((2), weight=10)
 
 
 set_default_color_theme("apperance.json")
-set_appearance_mode('system')
-# set_appearance_mode('dark')
+# set_appearance_mode('system')
+set_appearance_mode('dark')
 # TODO apperance mode selector button
 
 
