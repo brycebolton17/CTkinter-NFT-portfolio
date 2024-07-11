@@ -28,7 +28,7 @@ This Tkinter nft portfolio application can be used on **Mac**, **Windows** and *
 
 
 ## Installation
-- install the newest version of python from (python.org) to your machine.
+- install python from (python.org) to your machine (minimum version: 3.12.4).
 - clone this project
 ```sh
 git clone https://github.com/brycebolton17/CTkinter-NFT-portfolio.git
