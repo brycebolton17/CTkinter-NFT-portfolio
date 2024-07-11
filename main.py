@@ -51,11 +51,11 @@ nigh_blue_color = '#1F2833'
 
 # create main window
 window = CTk(fg_color=window_color)
-window.withdraw()  # auto switch to this window from terminal, vscode, etc....
+# window.withdraw()  # auto switch to this window from terminal, vscode, etc....
 
 window.title('NFT Portfolio')
 window.geometry('1440x900')
-window.state('zoomed')
+# window.state('zoomed')
 window.minsize(width=1400, height=690)
 
 window.grid_columnconfigure((2,4), weight=1)
