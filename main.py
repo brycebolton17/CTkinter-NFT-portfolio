@@ -509,7 +509,6 @@ def get_opensea_price(required_format_name):
 def get_magiceden_price(required_format_name):
     """enter nft collection name, returns floor price and value 0 volume change as a dict"""
     magiceden_url = f"https://api-mainnet.magiceden.dev/v2/collections/{required_format_name}/stats"
-    print(magiceden_bearer)
     magiceden_headers = {
         "accept": "application/json",
         "Authorization": f"Bearer {magiceden_bearer}"
@@ -521,10 +520,12 @@ def get_magiceden_price(required_format_name):
             return 'api error'
 
         floor_price = data["floorPrice"]
-        formatted_floor = "{:,.2f}".format(floor_price / 1000000000)
+        # formatted_floor = "{:,.2f}".format(floor_price / 1000000000) OLD API RESPONSE w Bearer Token
+        formatted_floor = int(floor_price)
+        formatted_floor2 = "{:,.2f}".format(floor_price / 1000000000)
 
         my_dict = {
-                'floor': float(formatted_floor),
+                'floor': float(formatted_floor2),
                 'vol24': 0.0
             }
         return my_dict
@@ -584,10 +585,13 @@ def opensea_url_validator():
         if this_prefix == opensea_prefix:
             api_response = get_opensea_price(set_name)
             token = 'ETH'
+            platform = 'opensea'
 
         elif this_prefix == magiceden_prefix:
             api_response = get_magiceden_price(set_name)
             token = 'SOL'
+            platform = 'magiceden'
+
         #
         if not api_response == 'api error':
             wallet_list = readjson()
@@ -601,7 +605,7 @@ def opensea_url_validator():
             wallet_list.append({
                 "name": set_name_entry.get(),
                 "quantity": 0.0,
-                "platform": "opensea",
+                "platform": platform,
                 "api_name_format": set_name,
                 "token": token,
                 "token_floor_price": api_response['floor'],
